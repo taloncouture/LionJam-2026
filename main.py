@@ -13,7 +13,9 @@ ORIGIN_X = (WIDTH // 2) - (TILE_SIZE // 2)
 ORIGIN_Y = HEIGHT // 4 - 100
 
 clock = pygame.time.Clock()
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
+screen = pygame.display.set_mode((0, 0), pygame.RESIZABLE)
+game_surface = pygame.Surface((WIDTH, HEIGHT))
+
 
 
 tiles = [[' ', ' ', ' ', ' ', '0', '0', '0', '0', ' ', ' ', '0', '0', '0', ' ', ' '],
@@ -34,18 +36,18 @@ tiles = [[' ', ' ', ' ', ' ', '0', '0', '0', '0', ' ', ' ', '0', '0', '0', ' ', 
 
 tiles2 = [[' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
          [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-         [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-         [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-         [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'f', 'f', ' ', ' ', ' ', ' '],
+         [' ', ' ', ' ', 't', 't', 't', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+         [' ', ' ', ' ', ' ', 't', 't', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+         [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 't', 'f', ' ', ' ', ' ', ' '],
          [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'f', ' ', ' ', ' ', ' ', ' '],
-         [' ', ' ', ' ', ' ', ' ', ' ', ' ', 'b', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+         [' ', ' ', ' ', ' ', 'f', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
          [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
          [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-         [' ', ' ', ' ', ' ', ' ', 'f', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+         [' ', ' ', ' ', ' ', ' ', 't', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
          [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-         [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'f', ' ', ' ', ' ', ' ', ' '],
+         [' ', ' ', ' ', 'f', ' ', ' ', ' ', ' ', ' ', 't', ' ', ' ', ' ', ' ', ' '],
          [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-         [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'b', ' '],
+         [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
          [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']]
 
 grass = pygame.image.load('grass.png')
@@ -60,13 +62,16 @@ boundingbox = pygame.transform.scale(boundingbox, (TILE_SIZE, TILE_SIZE))
 forest = pygame.image.load('forest.png')
 forest = pygame.transform.scale(forest, (TILE_SIZE, TILE_SIZE))
 
+factory = pygame.image.load('factory.png')
+factory = pygame.transform.scale(factory, (TILE_SIZE, TILE_SIZE))
+
 selected_x = 0
 selected_y = 0
 
 
 # I have no idea why this actually works now lol DO NOT CHANGE
 def screen_to_iso(mx, my, origin_x, origin_y):
-    
+
     mx -= origin_x
     my -= origin_y
 
@@ -106,32 +111,49 @@ def main():
 
         #main game loop
 
-        screen.fill((255, 255, 255))
-
+        screen.fill((207, 236, 255))
+        game_surface.fill((207, 236, 255))
         for y in range(len(tiles)):
             for x in range(len(tiles[y])):
 
                 if (tiles[y][x] == '0'):
                     ix, iy = coords_to_iso(x, y)
-                    screen.blit(grass, (ix, iy))
+                    game_surface.blit(grass, (ix, iy))
 
         for y in range(len(tiles2)):
             for x in range(len(tiles2[y])):
 
                 if (tiles2[y][x] == 'b'):
                     ix, iy = coords_to_iso(x, y)
-                    screen.blit(boundingbox, (ix, iy - HALF_W))
+                    game_surface.blit(boundingbox, (ix, iy - HALF_W - SCALE_FACTOR))
 
                 if(tiles2[y][x] == 'f'):
                     ix, iy = coords_to_iso(x, y)
-                    screen.blit(forest, (ix, iy - HALF_W))
+                    game_surface.blit(factory, (ix, iy - HALF_W - SCALE_FACTOR))
+                if(tiles2[y][x] == 't'):
+                    ix, iy = coords_to_iso(x, y)
+                    game_surface.blit(forest, (ix, iy - HALF_W - SCALE_FACTOR))
+                
+
+        win_w, win_h = screen.get_size()
+        scale = min(win_w / WIDTH, win_h / HEIGHT)
+        scaled_w, scaled_h = int(WIDTH * scale), int(HEIGHT * scale)
+        x = (win_w - scaled_w) // 2
+        y = (win_h - scaled_h) // 2
 
         mx, my = pygame.mouse.get_pos()
-        imx, imy = screen_to_iso(mx, my, ORIGIN_X, ORIGIN_Y)
-        if(imx < len(tiles[y]) and imy < len(tiles) and tiles[imy][imx] != ' '):
-            screen.blit(selector, coords_to_iso(imx, imy))
-    
 
+        mx = (mx - x) / scale
+        my = (my - y) / scale
+
+        imx, imy = screen_to_iso(mx, my, ORIGIN_X, ORIGIN_Y)
+        if(0 <= imy < len(tiles) and 0 <= imx < len(tiles[imy]) and tiles[imy][imx] != ' '):
+            game_surface.blit(selector, coords_to_iso(imx, imy))
+
+        #screen.fill((0, 0, 0))  # black bars
+        screen.blit(pygame.transform.smoothscale(game_surface, (scaled_w, scaled_h)), (x, y))
+
+        #screen.blit(game_surface, (0, 0))
         pygame.display.update()
         clock.tick(30)
 
