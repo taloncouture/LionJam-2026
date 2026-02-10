@@ -1,10 +1,9 @@
 import pygame
 import math
 import tiles
-from tiles import FactoryTile
-from tiles import ForestTile
 import assets
 from config import *
+import states
 
 pygame.init()
 
@@ -13,30 +12,8 @@ screen = pygame.display.set_mode((0, 0), pygame.RESIZABLE)
 game_surface = pygame.Surface((WIDTH, HEIGHT))
 
 
-
-selected_x = 0
-selected_y = 0
-
-
-#very temporary, will use objects soon
-
-
 # I have no idea why this actually works now lol DO NOT CHANGE
-def screen_to_iso(mx, my, origin_x, origin_y):
 
-    mx -= origin_x
-    my -= origin_y
-
-    mx -= HALF_W
-    my -= HALF_H
-
-    dx = mx / HALF_W
-    dy = my / HALF_H
-
-    x = (dx + dy) / 2
-    y = (dy - dx) / 2
-
-    return math.floor(x + 0.5), math.floor(y + 0.5)
 
 def window_to_game(mx, my):
     win_w, win_h = screen.get_size()
@@ -45,22 +22,13 @@ def window_to_game(mx, my):
     y = (win_h - int(HEIGHT * scale)) // 2
     return (mx - x) / scale, (my - y) / scale
 
-tile_map = []
-
-for y in range(len(tiles.tiles2)):
-    for x in range(len(tiles.tiles2[y])):
-        if tiles.tiles2[y][x] == 'f':
-            tile = FactoryTile(x, y)
-            tile_map.append(tile)
-
-        if tiles.tiles2[y][x] == 't':
-            tile = ForestTile(x, y)
-            tile_map.append(tile)
-
 def main():
 
     selected_x = 0
     selected_y = 0
+
+    gameState = states.GameState()
+    currentState = gameState
 
     while True:
         for event in pygame.event.get():
@@ -70,7 +38,7 @@ def main():
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mx, my = pygame.mouse.get_pos()
                 mx, my = window_to_game(mx, my)
-                selected_x, selected_y = screen_to_iso(mx, my, ORIGIN_X, ORIGIN_Y)
+                selected_x, selected_y = states.screen_to_iso(mx, my, ORIGIN_X, ORIGIN_Y)
                 print(selected_x, selected_y)
 
                 for y in range(len(tiles.tile_map)):
@@ -82,46 +50,15 @@ def main():
 
         #main game loop
 
-        screen.fill((207, 236, 255))
-        game_surface.fill((207, 236, 255))
+        #loop goes here
+        currentState.update()
+        currentState.render(screen, game_surface)
 
 
-        #         if(tiles2[y][x] == '!'):
-        #             ix, iy = tiles.coords_to_iso(x, y)
-        #             game_surface.blit(assets.pyramid, (ix - (HALF_W * (2)) - SCALE_FACTOR * 2, iy - (HALF_H * (5)) - HALF_W + SCALE_FACTOR))
-                
-        
-        #render all tiles
-        for y in range(len(tiles.ground_tile_map)):
-            for x in range(len(tiles.ground_tile_map[y])):
-                tiles.ground_tile_map[y][x].render(game_surface)
 
-        for y in range(len(tiles.tile_map)):
-            for x in range(len(tiles.tile_map[y])):
-                if(tiles.tile_map[y][x] != None):
-                    tiles.tile_map[y][x].render(game_surface)
-
-
-        # converting mouse coordinates - kind of weird (somehow works) do not change
-        win_w, win_h = screen.get_size()
-        scale = min(win_w / WIDTH, win_h / HEIGHT)
-        scaled_w, scaled_h = int(WIDTH * scale), int(HEIGHT * scale)
-        x = (win_w - scaled_w) // 2
-        y = (win_h - scaled_h) // 2
-        mx, my = pygame.mouse.get_pos()
-        mx = (mx - x) / scale
-        my = (my - y) / scale
-        # converting mouse coordinates
-
-
-        #selector
-        imx, imy = screen_to_iso(mx, my, ORIGIN_X, ORIGIN_Y)
-        if(0 <= imy < len(tiles.tiles_ground) and 0 <= imx < len(tiles.tiles_ground[imy]) and tiles.tiles_ground[imy][imx] != ' '):
-            game_surface.blit(assets.selector, tiles.coords_to_iso(imx, imy))
-        #selector
         
         #general rendering
-        screen.blit(pygame.transform.smoothscale(game_surface, (scaled_w, scaled_h)), (x, y))
+        
         pygame.display.update()
         clock.tick(30)
 

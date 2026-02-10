@@ -25,11 +25,11 @@ tiles_ground = [[' ', ' ', ' ', ' ', '0', '0', '0', '0', ' ', ' ', '0', '0', '0'
          [' ', ' ', ' ', ' ', ' ', ' ', ' ', '0', '0', ' ', ' ', ' ', ' ', ' ', ' ']]
 
 tiles2 = [[' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-         [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-         [' ', ' ', '!', '~', '~', 't', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-         [' ', ' ', '~', '~', '~', 't', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-         [' ', ' ', '~', '~', '~', ' ', ' ', ' ', ' ', 't', ' ', ' ', ' ', ' ', ' '],
-         [' ', ' ', '@', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+         [' ', '~', '~', '~', '~', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+         [' ', '~', '!', '~', '~', 't', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+         [' ', '~', '~', '~', '~', 't', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+         [' ', '~', '~', '~', '~', '~', ' ', ' ', ' ', 't', ' ', ' ', ' ', ' ', ' '],
+         [' ', '~', '@', '~', '~', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
          [' ', ' ', ' ', ' ', 'f', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
          [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
          [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
@@ -107,6 +107,24 @@ class AirTile(Tile):
     def on_click(self):
         place_tile(self.x, self.y, FactoryTile)
 
+class Restricted(Tile):
+    def __init__(self, x, y):
+        super().__init__(x, y)
+
+    def render(self, surface):
+        pass
+
+class Pyramid(Tile):
+    def __init__(self, x, y):
+        super().__init__(x, y)
+
+    def render(self, surface):
+        ix, iy = coords_to_iso(self.x, self.y)
+        surface.blit(assets.pyramid, (ix - (config.HALF_W * (2)) - config.SCALE_FACTOR * 2, iy - (config.HALF_H * (5)) - config.HALF_W + config.SCALE_FACTOR))
+
+
+#tile_list = {'f': FactoryTile, 't': ForestTile, '0': GrassTile}
+
 
 for y in range(len(tiles2)):
     tile_row = []
@@ -115,6 +133,10 @@ for y in range(len(tiles2)):
             tile_row.append(FactoryTile(x, y))
         elif tiles2[y][x] == 't':
             tile_row.append(ForestTile(x, y))
+        elif tiles2[y][x] == '~':
+            tile_row.append(Restricted(x, y))
+        elif tiles2[y][x] == '!':
+            tile_row.append(Pyramid(x, y))
         else:
             tile_row.append(AirTile(x, y))
     tile_map.append(tile_row)
