@@ -37,3 +37,12 @@ inventory = pygame.transform.scale(inventory, (128 * SCALE_FACTOR, 64 * SCALE_FA
 inventory_selector = pygame.image.load(resource_path('assets/inventory_selector.png'))
 inventory_selector = pygame.transform.scale(inventory_selector, (16 * SCALE_FACTOR, 16 * SCALE_FACTOR))
 
+critics = pygame.image.load(resource_path('assets/critics.png'))
+critics = pygame.transform.scale(critics, (TILE_SIZE, TILE_SIZE))
+
+farm = pygame.image.load(resource_path('assets/farm.png'))
+farm = pygame.transform.scale(farm, (TILE_SIZE, TILE_SIZE))
+
+redbull = pygame.image.load(resource_path('assets/redbull2.png'))
+redbull = pygame.transform.scale(redbull, (TILE_SIZE, TILE_SIZE))
+

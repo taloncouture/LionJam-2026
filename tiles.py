@@ -27,16 +27,16 @@ tiles_ground = [[' ', ' ', ' ', ' ', '0', '0', '0', '0', ' ', ' ', '0', '0', '0'
 tiles2 = [[' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
          [' ', '~', '~', '~', '~', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
          [' ', '~', '!', '~', '~', 't', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-         [' ', '~', '~', '~', '~', 't', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-         [' ', '~', '~', '~', '~', '~', ' ', ' ', ' ', 't', ' ', ' ', ' ', ' ', ' '],
-         [' ', '~', '@', '~', '~', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-         [' ', ' ', ' ', ' ', 'f', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+         [' ', '~', '~', '~', '~', 't', ' ', ' ', ' ', ' ', ' ', 'r', 'r', ' ', ' '],
+         [' ', '~', '~', '~', '~', '~', ' ', ' ', ' ', 't', ' ', 'r', 'r', ' ', ' '],
+         ['@', '~', '~', '~', '~', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+         [' ', ' ', ' ', ' ', 'f', ' ', ' ', ' ', 'r', ' ', 'c', ' ', ' ', ' ', ' '],
          [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-         [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-         [' ', ' ', ' ', ' ', ' ', 't', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-         [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-         [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 't', ' ', ' ', ' ', ' ', ' '],
-         [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+         [' ', ' ', ' ', ' ', ' ', ' ', ' ', 'c', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+         [' ', ' ', ' ', ' ', ' ', 't', ' ', 'c', ' ', ' ', 'e', ' ', ' ', ' ', ' '],
+         [' ', ' ', ' ', 'r', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+         [' ', ' ', ' ', 'r', ' ', ' ', ' ', ' ', ' ', 't', ' ', ' ', ' ', ' ', ' '],
+         [' ', ' ', ' ', 'r', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
          [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
          [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']]
 
@@ -122,6 +122,26 @@ class Pyramid(Tile):
         ix, iy = coords_to_iso(self.x, self.y)
         surface.blit(assets.pyramid, (ix - (config.HALF_W * (2)) - config.SCALE_FACTOR * 2, iy - (config.HALF_H * (5)) - config.HALF_W + config.SCALE_FACTOR))
 
+class MRPizza(Tile):
+    def __init__(self, x, y):
+        super().__init__(x, y)
+        self.image = assets.mrpizza
+
+class Critics(Tile):
+    def __init__(self, x, y):
+        super().__init__(x, y)
+        self.image = assets.critics
+
+class Farm(Tile):
+    def __init__(self, x, y):
+        super().__init__(x, y)
+        self.image = assets.farm
+
+class RedBull(Tile):
+    def __init__(self, x, y):
+        super().__init__(x, y)
+        self.image = assets.redbull
+
 
 #tile_list = {'f': FactoryTile, 't': ForestTile, '0': GrassTile}
 
@@ -137,6 +157,14 @@ for y in range(len(tiles2)):
             tile_row.append(Restricted(x, y))
         elif tiles2[y][x] == '!':
             tile_row.append(Pyramid(x, y))
+        elif tiles2[y][x] == '@':
+            tile_row.append(MRPizza(x, y))
+        elif tiles2[y][x] == 'c':
+            tile_row.append(Critics(x, y))
+        elif tiles2[y][x] == 'r':
+            tile_row.append(Farm(x, y))
+        elif tiles2[y][x] == 'e':
+            tile_row.append(RedBull(x, y))
         else:
             tile_row.append(AirTile(x, y))
     tile_map.append(tile_row)
