@@ -4,6 +4,7 @@ import tiles
 import assets
 from config import *
 import states
+import engine_core
 
 pygame.init()
 
@@ -27,7 +28,10 @@ def main():
     selected_x = 0
     selected_y = 0
 
-    gameState = states.GameState()
+    engine = engine_core.Engine()
+
+    gameState = states.GameState(engine)
+    inventoryState = states.InventoryState(engine)
     currentState = gameState
 
     while True:
@@ -36,19 +40,20 @@ def main():
                 pygame.quit()
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                mx, my = pygame.mouse.get_pos()
-                mx, my = window_to_game(mx, my)
-                selected_x, selected_y = states.screen_to_iso(mx, my, ORIGIN_X, ORIGIN_Y)
-                print(selected_x, selected_y)
+               currentState.on_click()
 
-                for y in range(len(tiles.tile_map)):
-                    for x in range(len(tiles.tile_map[y])):
-                        if(tiles.tile_map[y][x].x == selected_x and tiles.tile_map[y][x].y == selected_y):
-                            tiles.tile_map[y][x].on_click()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_e:
+                    if currentState == inventoryState:
+                        currentState = gameState
+                    elif currentState == gameState:
+                        currentState = inventoryState
 
     
 
         #main game loop
+
+        engine.update(screen)
 
         #loop goes here
         currentState.update()
