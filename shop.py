@@ -72,6 +72,9 @@ class ShopState(State):
         screen.fill((102, 197, 255))
         surface.fill((102, 197, 255))
 
+        # screen.fill((185, 157, 51))
+        # surface.fill((185, 157, 51))
+
 
         surface.blit(assets.inventory, (self.x, self.y))
 
@@ -80,10 +83,15 @@ class ShopState(State):
                 if(self.slots[y][x] != ' '):
                     self.slots[y][x].render(surface)
 
+
         if(self.selected_x != None):
             surface.blit(assets.inventory_selector, (self.x + (self.selected_x * 16 * SCALE_FACTOR), self.y + (self.selected_y * 16 * SCALE_FACTOR)))
 
         if(self.highlighted_x != None):
             surface.blit(assets.inventory_selected, (self.x + (self.highlighted_x * 16 * SCALE_FACTOR), self.y + (self.highlighted_y * 16 * SCALE_FACTOR)))
+
+        surface.blit(assets.shop_border, (self.x - (16 * SCALE_FACTOR), self.y - (16 * SCALE_FACTOR)))
+
+        
 
         screen.blit(pygame.transform.smoothscale(surface, (self.engine.scaled_w, self.engine.scaled_h)), (self.engine.offset_x, self.engine.offset_y))

@@ -37,6 +37,9 @@ mrpizza = pygame.transform.scale(mrpizza, (TILE_SIZE, TILE_SIZE))
 inventory = pygame.image.load(resource_path('assets/inventory2.png'))
 inventory = pygame.transform.scale(inventory, (128 * SCALE_FACTOR, 64 * SCALE_FACTOR))
 
+shop_border = pygame.image.load(resource_path('assets/shop_border.png'))
+shop_border = pygame.transform.scale(shop_border, (16 * 10 * SCALE_FACTOR, 16 * 6 * SCALE_FACTOR))
+
 inventory_selector = pygame.image.load(resource_path('assets/inventory_selector.png'))
 inventory_selector = pygame.transform.scale(inventory_selector, (16 * SCALE_FACTOR, 16 * SCALE_FACTOR))
 
