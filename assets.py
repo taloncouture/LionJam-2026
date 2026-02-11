@@ -37,8 +37,20 @@ cheese = pygame.transform.scale(cheese, (TILE_SIZE, TILE_SIZE))
 pizza = pygame.image.load(resource_path('assets/pizza.png'))
 pizza = pygame.transform.scale(pizza, (TILE_SIZE, TILE_SIZE))
 
-pyramid = pygame.image.load(resource_path('assets/stage_1.png'))
-pyramid = pygame.transform.scale(pyramid, (TILE_SIZE * 3, TILE_SIZE * 3))
+stage_5 = pygame.image.load(resource_path('assets/pyramid.png'))
+stage_5 = pygame.transform.scale(stage_5, (TILE_SIZE * 3, TILE_SIZE * 3))
+
+stage_4 = pygame.image.load(resource_path('assets/stage_4.png'))
+stage_4 = pygame.transform.scale(stage_4, (TILE_SIZE * 3, TILE_SIZE * 3))
+
+stage_3 = pygame.image.load(resource_path('assets/stage_3.png'))
+stage_3 = pygame.transform.scale(stage_3, (TILE_SIZE * 3, TILE_SIZE * 3))
+
+stage_2 = pygame.image.load(resource_path('assets/stage_2.png'))
+stage_2 = pygame.transform.scale(stage_2, (TILE_SIZE * 3, TILE_SIZE * 3))
+
+stage_1 = pygame.image.load(resource_path('assets/stage_1.png'))
+stage_1 = pygame.transform.scale(stage_1, (TILE_SIZE * 3, TILE_SIZE * 3))
 
 mrpizza = pygame.image.load(resource_path('assets/mrpizza.png'))
 mrpizza = pygame.transform.scale(mrpizza, (TILE_SIZE, TILE_SIZE))

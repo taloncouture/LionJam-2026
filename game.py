@@ -11,6 +11,7 @@ class GameState(states.State):
         super().__init__(engine, gameContext)
         self.engine = engine
         self.gameContext = gameContext
+        self.built = False
 
         self.next_turn_button = items.Button(assets.next_turn, WIDTH - (16 * SCALE_FACTOR) - PADDING, HEIGHT - (16 * SCALE_FACTOR) - PADDING, self.engine)
 
@@ -48,12 +49,24 @@ class GameState(states.State):
             self.next_turn()
         
         else:
-            if(0 <= selected_y <= len(tiles.tile_map) and 0 <= selected_x <= len(tiles.tile_map[selected_y])):
-                tiles.tile_map[selected_y][selected_x].on_click()
+            if(0 <= selected_y < len(tiles.tile_map) and 0 <= selected_x < len(tiles.tile_map[selected_y])):
+                if(isinstance(tiles.tile_map[selected_y][selected_x], tiles.ProductionTile)):
+                    if(tiles.tile_map[selected_y][selected_x].collect()):
+                        self.gameContext.bricks += 10
+                        print(self.gameContext.bricks)
         
 
     def update(self):
-        pass
+        for y in range(len(tiles.tile_map)):
+            for x in range(len(tiles.tile_map[y])):
+                if(type(tiles.tile_map[y][x]) == tiles.Pyramid):
+                    tiles.tile_map[y][x].stage = int(self.gameContext.bricks / (100 / len(tiles.tile_map[y][x].stages)))
+                    if(self.gameContext.bricks >= self.gameContext.required_bricks):
+                        self.built = True
+                        print("built")
+                    
+                    if(tiles.tile_map[y][x].stage >= len(tiles.tile_map[y][x].stages)):
+                        tiles.tile_map[y][x].stage = len(tiles.tile_map[y][x].stages) - 1
 
     def render(self, screen, surface):
 

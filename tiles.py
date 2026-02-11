@@ -82,8 +82,11 @@ class ProductionTile(Tile):
     def produce(self):
         self.has_item = True
 
-    def on_click(self):
-        self.has_item = False
+    def collect(self):
+        if(self.has_item):
+            self.has_item = False
+            return True
+        return False
 
     def update(self):
         self.produce()
@@ -157,10 +160,17 @@ class Restricted(Tile):
 class Pyramid(Tile):
     def __init__(self, x, y):
         super().__init__(x, y)
+        self.stages = [None, assets.stage_1, assets.stage_2, assets.stage_3, assets.stage_4, assets.stage_5]
+        self.stage = 0
 
     def render(self, surface):
-        ix, iy = coords_to_iso(self.x, self.y)
-        surface.blit(assets.pyramid, (ix - (config.HALF_W * (2)) - config.SCALE_FACTOR * 2, iy - (config.HALF_H * (5)) - config.HALF_W + config.SCALE_FACTOR))
+        if(self.stage != 0):
+            ix, iy = coords_to_iso(self.x, self.y)
+            surface.blit(self.stages[self.stage], (ix - (config.HALF_W * (2)) - config.SCALE_FACTOR * 2, iy - (config.HALF_H * (5)) - config.HALF_W + config.SCALE_FACTOR))
+
+    def build(self):
+        if(self.stage < len(self.stages) - 1):
+            self.stage += 1
 
 class MRPizza(Tile):
     def __init__(self, x, y):
