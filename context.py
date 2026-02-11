@@ -3,6 +3,6 @@
 class GameContext:
     def __init__(self):
         self.selected_item = None
-        self.credits = 0
+        self.credits = 10
         self.bricks = 0
         self.turn = 1

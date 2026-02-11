@@ -17,27 +17,40 @@ class GameState(states.State):
 
     def place_item(self, x, y):
         if(0 <= y < len(tiles.tile_map) and 0 <= x < len(tiles.tile_map[y])):
-            if(tiles.place_tile(x, y, self.gameContext.selected_item)):
+            if(tiles.place_tile(x, y, self.gameContext.selected_item.tile)):
                 self.gameContext.selected_item = None
                 return True
         return False
     
     def next_turn(self):
         self.gameContext.turn += 1
-        #produce items
+
+        for y in range(len(tiles.tile_map)):
+            for x in range(len(tiles.tile_map[y])):
+                tiles.tile_map[y][x].update()
+                if(type(tiles.tile_map[y][x]) is tiles.FactoryTile and tiles.tile_map[y][x].has_item == True):
+                    tx, ty = tiles.coords_to_iso(x, y)
+                    self.engine.render(assets.pizza, tx, ty - TILE_SIZE)
+                    #print("pizza!")
 
     def on_click(self):
         mx = self.engine.mouse_x
         my = self.engine.mouse_y
         selected_x, selected_y = states.screen_to_iso(mx, my, ORIGIN_X, ORIGIN_Y)
 
-        if(self.gameContext.selected_item != None):
+        if(self.gameContext.selected_item != None and self.gameContext.selected_item.cost <= self.gameContext.credits):
+            cost = self.gameContext.selected_item.cost
+            if(self.place_item(selected_x, selected_y)):
+                self.gameContext.credits -= cost
 
-            self.place_item(selected_x, selected_y)
-
-        if(self.next_turn_button.selected == True):
+        elif(self.next_turn_button.selected == True):
             self.next_turn_button.selected = False
             self.next_turn()
+        
+        else:
+            if(0 <= selected_y <= len(tiles.tile_map) and 0 <= selected_x <= len(tiles.tile_map[selected_y])):
+                tiles.tile_map[selected_y][selected_x].on_click()
+        
 
     def update(self):
         pass
@@ -48,6 +61,8 @@ class GameState(states.State):
         # surface.fill((186, 246, 255))
         screen.fill((102, 197, 255))
         surface.fill((102, 197, 255))
+        # screen.fill((0, 0, 0))
+        # surface.fill((0, 0, 0))
 
         for y in range(len(tiles.ground_tile_map)):
             for x in range(len(tiles.ground_tile_map[y])):
@@ -57,6 +72,10 @@ class GameState(states.State):
             for x in range(len(tiles.tile_map[y])):
                 if(tiles.tile_map[y][x] != None):
                     tiles.tile_map[y][x].render(surface)
+
+                    if(isinstance(tiles.tile_map[y][x], tiles.ProductionTile) and tiles.tile_map[y][x].has_item):
+                        ix, iy = tiles.coords_to_iso(x, y)
+                        surface.blit(assets.pizza, (ix, iy - TILE_SIZE))
 
          # converting mouse coordinates - kind of weird (somehow works) do not change
         win_w, win_h = screen.get_size()
@@ -70,8 +89,11 @@ class GameState(states.State):
         my = (my - y) / scale
         # converting mouse coordinates
 
-        graphics.renderText(surface, PADDING, PADDING, 24, "Credits: 67")
-        graphics.renderText(surface, WIDTH / 2, PADDING, 24, f"Turn: {self.gameContext.turn}", 1)
+        surface.blit(assets.cheese, (PADDING, 0))
+        graphics.renderText(surface, PADDING * 8.2, (PADDING * 4), 24, f'x{self.gameContext.credits}', 0, 1)
+        
+        
+        graphics.renderText(surface, PADDING, HEIGHT - PADDING * 5, 24, f"Turn: {self.gameContext.turn}")
         
         self.next_turn_button.update()
         self.next_turn_button.render()

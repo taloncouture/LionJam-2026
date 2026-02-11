@@ -53,7 +53,7 @@ class ShopState(State):
             y = int((my - self.y) / (16 * SCALE_FACTOR))
 
             if(self.slots[y][x] != ' '):
-                self.gameContext.selected_item = self.slots[y][x].tile
+                self.gameContext.selected_item = self.slots[y][x]
                 self.highlighted_x = x
                 self.highlighted_y = y
 
@@ -77,8 +77,8 @@ class ShopState(State):
         # screen.fill((185, 157, 51))
         # surface.fill((185, 157, 51))
 
-        surface.blit(assets.redbull, ((WIDTH / 2) - (TILE_SIZE / 2), (PADDING * 6)))
-        graphics.renderText(surface, (WIDTH / 2) + PADDING * 3, (PADDING * 7) + (TILE_SIZE / 2), 24, f'x{self.gameContext.credits}', 0, 1)
+        surface.blit(assets.cheese, ((WIDTH / 2) - (TILE_SIZE / 2), (PADDING * 6)))
+        graphics.renderText(surface, (WIDTH / 2) + PADDING * 3, (PADDING * 5.5) + (TILE_SIZE / 2), 24, f'x{self.gameContext.credits}', 0, 1)
 
 
         surface.blit(assets.inventory, (self.x, self.y))

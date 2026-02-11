@@ -31,7 +31,13 @@ road = pygame.transform.scale(road, (TILE_SIZE, TILE_SIZE))
 monument = pygame.image.load(resource_path('assets/monument.png'))
 monument = pygame.transform.scale(monument, (TILE_SIZE, TILE_SIZE))
 
-pyramid = pygame.image.load(resource_path('assets/pyramid.png'))
+cheese = pygame.image.load(resource_path('assets/cheese.png'))
+cheese = pygame.transform.scale(cheese, (TILE_SIZE, TILE_SIZE))
+
+pizza = pygame.image.load(resource_path('assets/pizza.png'))
+pizza = pygame.transform.scale(pizza, (TILE_SIZE, TILE_SIZE))
+
+pyramid = pygame.image.load(resource_path('assets/stage_1.png'))
 pyramid = pygame.transform.scale(pyramid, (TILE_SIZE * 3, TILE_SIZE * 3))
 
 mrpizza = pygame.image.load(resource_path('assets/mrpizza.png'))
@@ -60,6 +66,9 @@ road_item = pygame.transform.scale(road_item, (16 * SCALE_FACTOR, 16 * SCALE_FAC
 
 monument_item = pygame.image.load(resource_path('assets/monument_item.png'))
 monument_item = pygame.transform.scale(monument_item, (16 * SCALE_FACTOR, 16 * SCALE_FACTOR))
+
+platform = pygame.image.load(resource_path('assets/platform2.png'))
+platform = pygame.transform.scale(platform, (TILE_SIZE, TILE_SIZE))
 
 next_turn = pygame.image.load(resource_path('assets/next_turn.png'))
 next_turn = pygame.transform.scale(next_turn, (16 * SCALE_FACTOR, 16 * SCALE_FACTOR))
