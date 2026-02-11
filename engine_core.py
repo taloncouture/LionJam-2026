@@ -10,7 +10,7 @@ class Engine:
         self.offset_y = 0
         self.scaled_w, self.scaled_h = 0, 0
 
-        self.selected_item = None
+        #self.selected_item = None
 
 
     def update(self, screen):

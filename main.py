@@ -5,6 +5,8 @@ import assets
 from config import *
 import states
 import engine_core
+import shop
+import context
 
 pygame.init()
 
@@ -25,29 +27,30 @@ def window_to_game(mx, my):
 
 def main():
 
-    selected_x = 0
-    selected_y = 0
-
     engine = engine_core.Engine()
+    gameContext = context.GameContext()
 
-    gameState = states.GameState(engine)
-    inventoryState = states.InventoryState(engine)
+    gameState = states.GameState(engine, gameContext)
+    shopState = shop.ShopState(engine, gameContext)
     currentState = gameState
 
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
+                return
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
-               currentState.on_click()
+                currentState.on_click()
 
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_e:
-                    if currentState == inventoryState:
+                    if currentState == shopState:
+                        currentState.on_close()
                         currentState = gameState
                     elif currentState == gameState:
-                        currentState = inventoryState
+                        currentState.on_close()
+                        currentState = shopState
 
     
 

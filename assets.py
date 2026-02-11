@@ -10,7 +10,7 @@ def resource_path(relative_path):
         base_path = os.path.abspath(".")
     return os.path.join(base_path, relative_path)
 
-grass = pygame.image.load(resource_path('assets/grass.png'))
+grass = pygame.image.load(resource_path('assets/grass_sand.png'))
 grass = pygame.transform.scale(grass, (TILE_SIZE, TILE_SIZE))
 
 selector = pygame.image.load(resource_path('assets/selector.png'))
@@ -25,6 +25,9 @@ forest = pygame.transform.scale(forest, (TILE_SIZE, TILE_SIZE))
 factory = pygame.image.load(resource_path('assets/factory.png'))
 factory = pygame.transform.scale(factory, (TILE_SIZE, TILE_SIZE))
 
+road = pygame.image.load(resource_path('assets/road.png'))
+road = pygame.transform.scale(road, (TILE_SIZE, TILE_SIZE))
+
 pyramid = pygame.image.load(resource_path('assets/pyramid.png'))
 pyramid = pygame.transform.scale(pyramid, (TILE_SIZE * 3, TILE_SIZE * 3))
 
@@ -36,6 +39,18 @@ inventory = pygame.transform.scale(inventory, (128 * SCALE_FACTOR, 64 * SCALE_FA
 
 inventory_selector = pygame.image.load(resource_path('assets/inventory_selector.png'))
 inventory_selector = pygame.transform.scale(inventory_selector, (16 * SCALE_FACTOR, 16 * SCALE_FACTOR))
+
+inventory_selected = pygame.image.load(resource_path('assets/inventory_selected.png'))
+inventory_selected = pygame.transform.scale(inventory_selected, (16 * SCALE_FACTOR, 16 * SCALE_FACTOR))
+
+factory_item = pygame.image.load(resource_path('assets/factory_item.png'))
+factory_item = pygame.transform.scale(factory_item, (16 * SCALE_FACTOR, 16 * SCALE_FACTOR))
+
+farm_item = pygame.image.load(resource_path('assets/farm_item.png'))
+farm_item = pygame.transform.scale(farm_item, (16 * SCALE_FACTOR, 16 * SCALE_FACTOR))
+
+road_item = pygame.image.load(resource_path('assets/road_item.png'))
+road_item = pygame.transform.scale(road_item, (16 * SCALE_FACTOR, 16 * SCALE_FACTOR))
 
 critics = pygame.image.load(resource_path('assets/critics.png'))
 critics = pygame.transform.scale(critics, (TILE_SIZE, TILE_SIZE))
