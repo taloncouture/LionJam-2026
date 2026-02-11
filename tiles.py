@@ -97,6 +97,11 @@ class RoadTile(Tile):
         super().__init__(x, y)
         self.image = assets.road
 
+class MonumentTile(Tile):
+    def __init__(self, x, y):
+        super().__init__(x, y)
+        self.image = assets.monument
+
 class ForestTile(Tile):
     def __init__(self, x, y):
         super().__init__(x, y)

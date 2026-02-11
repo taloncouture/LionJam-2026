@@ -7,6 +7,7 @@ import states
 import engine_core
 import shop
 import context
+import game
 
 pygame.init()
 
@@ -14,6 +15,7 @@ clock = pygame.time.Clock()
 screen = pygame.display.set_mode((0, 0), pygame.RESIZABLE)
 game_surface = pygame.Surface((WIDTH, HEIGHT))
 
+pygame.display.set_caption("Great Pyramid of Pizza")
 
 # I have no idea why this actually works now lol DO NOT CHANGE
 
@@ -27,10 +29,10 @@ def window_to_game(mx, my):
 
 def main():
 
-    engine = engine_core.Engine()
+    engine = engine_core.Engine(game_surface)
     gameContext = context.GameContext()
 
-    gameState = states.GameState(engine, gameContext)
+    gameState = game.GameState(engine, gameContext)
     shopState = shop.ShopState(engine, gameContext)
     currentState = gameState
 

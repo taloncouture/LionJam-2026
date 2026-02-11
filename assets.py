@@ -28,6 +28,9 @@ factory = pygame.transform.scale(factory, (TILE_SIZE, TILE_SIZE))
 road = pygame.image.load(resource_path('assets/road.png'))
 road = pygame.transform.scale(road, (TILE_SIZE, TILE_SIZE))
 
+monument = pygame.image.load(resource_path('assets/monument.png'))
+monument = pygame.transform.scale(monument, (TILE_SIZE, TILE_SIZE))
+
 pyramid = pygame.image.load(resource_path('assets/pyramid.png'))
 pyramid = pygame.transform.scale(pyramid, (TILE_SIZE * 3, TILE_SIZE * 3))
 
@@ -55,12 +58,18 @@ farm_item = pygame.transform.scale(farm_item, (16 * SCALE_FACTOR, 16 * SCALE_FAC
 road_item = pygame.image.load(resource_path('assets/road_item.png'))
 road_item = pygame.transform.scale(road_item, (16 * SCALE_FACTOR, 16 * SCALE_FACTOR))
 
+monument_item = pygame.image.load(resource_path('assets/monument_item.png'))
+monument_item = pygame.transform.scale(monument_item, (16 * SCALE_FACTOR, 16 * SCALE_FACTOR))
+
+next_turn = pygame.image.load(resource_path('assets/next_turn.png'))
+next_turn = pygame.transform.scale(next_turn, (16 * SCALE_FACTOR, 16 * SCALE_FACTOR))
+
 critics = pygame.image.load(resource_path('assets/critics.png'))
 critics = pygame.transform.scale(critics, (TILE_SIZE, TILE_SIZE))
 
-farm = pygame.image.load(resource_path('assets/farm.png'))
+farm = pygame.image.load(resource_path('assets/farm3.png'))
 farm = pygame.transform.scale(farm, (TILE_SIZE, TILE_SIZE))
 
-redbull = pygame.image.load(resource_path('assets/redbull2.png'))
+redbull = pygame.image.load(resource_path('assets/redbull0.png'))
 redbull = pygame.transform.scale(redbull, (TILE_SIZE, TILE_SIZE))
 
