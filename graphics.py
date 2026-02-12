@@ -1,10 +1,20 @@
 import pygame
 import config
+import os
+import sys
 
 pygame.init()
 
+def resource_path(relative_path):
+    try:
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path, relative_path)
+
+
 def renderText(surface, x, y, size, content, centered_x = 0, centered_y = 0, color=(255, 255, 255)):
-    font = pygame.font.Font('assets/pixel.ttf', size)
+    font = pygame.font.Font(resource_path('assets/pixel.ttf'), size)
     text = font.render(content, True, color)
     text_rect = text.get_rect()
 

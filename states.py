@@ -66,7 +66,7 @@ class EndState(State):
         
 
     def update(self):
-        if(self.text_y > -100):
+        if(self.text_y > -1000):
             self.text_y -= 1
 
 class TitleState(State):
