@@ -23,7 +23,7 @@ jobs:
           pip install pygame pyinstaller
 
       - name: Build with PyInstaller
-        run: pyinstaller your_game.py --onefile --windowed --add-data "assets;assets"
+        run: pyinstaller main.py --onefile --windowed --add-data "assets;assets"
 
       - name: Upload EXE artifact
         uses: actions/upload-artifact@v4
