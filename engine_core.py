@@ -2,7 +2,7 @@ from config import *
 import pygame
 
 class Engine:
-    def __init__(self, surface):
+    def __init__(self, surface, screen):
         self.mouse_x = 0
         self.mouse_y = 0
         self.scale = 1
@@ -11,12 +11,13 @@ class Engine:
         self.scaled_w, self.scaled_h = 0, 0
 
         self.surface = surface
+        self.screen = screen
 
         #self.selected_item = None
 
 
-    def update(self, screen):
-        win_w, win_h = screen.get_size()
+    def update(self):
+        win_w, win_h = self.screen.get_size()
         scale = min(win_w / WIDTH, win_h / HEIGHT)
         self.scaled_w, self.scaled_h = int(WIDTH * scale), int(HEIGHT * scale)
         self.offset_x = (win_w - self.scaled_w) // 2

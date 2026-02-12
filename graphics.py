@@ -3,9 +3,9 @@ import config
 
 pygame.init()
 
-def renderText(surface, x, y, size, content, centered_x = 0, centered_y = 0):
+def renderText(surface, x, y, size, content, centered_x = 0, centered_y = 0, color=(255, 255, 255)):
     font = pygame.font.Font('assets/pixel.ttf', size)
-    text = font.render(content, True, (255, 255, 255))
+    text = font.render(content, True, color)
     text_rect = text.get_rect()
 
     text_rect.x = x
@@ -18,4 +18,5 @@ def renderText(surface, x, y, size, content, centered_x = 0, centered_y = 0):
         
 
     surface.blit(text, text_rect)
+    
 

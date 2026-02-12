@@ -24,6 +24,14 @@ class GameState(states.State):
 
         self.next_turn_button = items.Button(assets.next_turn, WIDTH - (16 * SCALE_FACTOR) - PADDING, HEIGHT - (16 * SCALE_FACTOR) - PADDING, self.engine)
 
+        self.fade_surface = pygame.Surface((WIDTH, HEIGHT))
+        self.fade_surface.fill((0, 0, 0))
+        self.fade_surface.set_alpha(0)
+        self.fade_alpha = 255
+        self.fade_speed = 10
+
+        self.game_finished = False
+
     
     # cool algorithm i found
     def generate_connected_tiles(self, start, tilemap):
@@ -90,6 +98,9 @@ class GameState(states.State):
 
         requirements_met = all(len(tile.connected_tiles[t_type]) >= count for t_type, count in tile.required_connections.items())
 
+
+        tile.requirements_met = requirements_met
+
         if(requirements_met):
             for required_type, required_count in tile.required_connections.items():
 
@@ -101,19 +112,20 @@ class GameState(states.State):
                     if(to_claim_count <= 0):
                         break
                     
-                    if claim and getattr(t, 'claimed', None) in (None, tile):
+                    if(claim and getattr(t, "claimable", False) and getattr(t, 'claimed', None) in (None, tile)):
                         t.claimed = tile
                         to_claim_count -= 1
 
         if requirements_met:
-            print(f"{type(tile).__name__} at {(tile.x, tile.y)} requirements met!")
+            #print(f"{type(tile).__name__} at {(tile.x, tile.y)} requirements met!")
             if(not tile.requirements_met):
                 tile.requirements_met = True
 
 
     def place_item(self, x, y):
         if(0 <= y < len(tiles.tile_map) and 0 <= x < len(tiles.tile_map[y])):
-            if(tiles.place_tile(x, y, self.gameContext.selected_item.tile)):
+
+            if(tiles.place_tile(x, y, self.gameContext.selected_item.tile, tiles.tile_map)):
                 self.gameContext.selected_item = None
 
                 for y in range(len(tiles.tile_map)):
@@ -133,6 +145,11 @@ class GameState(states.State):
         return False
     
     def next_turn(self):
+
+        if(self.gameContext.built):
+            self.game_finished = True
+            return
+
         self.gameContext.turn += 1
 
         for y in range(len(tiles.tile_map)):
@@ -146,6 +163,8 @@ class GameState(states.State):
                 #     self.engine.render(assets.pizza, tx, ty - TILE_SIZE)
                     #print("pizza!")
 
+
+
     def on_click(self):
         mx = self.engine.mouse_x
         my = self.engine.mouse_y
@@ -153,42 +172,69 @@ class GameState(states.State):
 
         if(self.gameContext.selected_item != None and self.gameContext.selected_item.cost <= self.gameContext.credits):
             cost = self.gameContext.selected_item.cost
-            if(self.place_item(selected_x, selected_y)):
+
+            if(isinstance(self.gameContext.selected_item, items.DestructionItem)):
+                if(tiles.is_valid(selected_x, selected_y, tiles.tile_map) and isinstance(tiles.tile_map[selected_y][selected_x], self.gameContext.selected_item.targets)):
+                    tiles.destroy_tile(selected_x, selected_y, tiles.tile_map)
+                    self.gameContext.credits -= cost
+
+
+            elif(self.place_item(selected_x, selected_y)):
                 self.gameContext.credits -= cost
 
         elif(self.next_turn_button.selected == True):
             self.next_turn_button.selected = False
             self.next_turn()
         
-        else:
-            if(0 <= selected_y < len(tiles.tile_map) and 0 <= selected_x < len(tiles.tile_map[selected_y])):
-                if(isinstance(tiles.tile_map[selected_y][selected_x], tiles.ProductionTile)):
-                    if(tiles.tile_map[selected_y][selected_x].collect()):
-                        self.gameContext.bricks += 1
-                        print("clicked")
+        if(0 <= selected_y < len(tiles.tile_map) and 0 <= selected_x < len(tiles.tile_map[selected_y])):
+            if(isinstance(tiles.tile_map[selected_y][selected_x], tiles.ProductionTile)):
+                if(tiles.tile_map[selected_y][selected_x].collect()):
+                    self.gameContext.bricks += tiles.tile_map[selected_y][selected_x].production_quantity
+                    print(self.gameContext.bricks)
                         #print(self.gameContext.bricks)
         
 
     def update(self):
+
+        if self.fade_alpha > 0:
+            self.fade_alpha -= self.fade_speed
+            if self.fade_alpha < 0:
+                self.fade_alpha = 0
+        self.fade_surface.set_alpha(self.fade_alpha)
+
+
         for y in range(len(tiles.tile_map)):
             for x in range(len(tiles.tile_map[y])):
-                if(type(tiles.tile_map[y][x]) == tiles.Pyramid):
-                    tiles.tile_map[y][x].stage = int(self.gameContext.bricks / (100 / len(tiles.tile_map[y][x].stages)))
-                    if(self.gameContext.bricks >= self.gameContext.required_bricks):
+                
+                
+                if(isinstance(tiles.tile_map[y][x], tiles.Pyramid)):
+
+                    pyramid = tiles.tile_map[y][x]
+                    if(self.gameContext.pyramid_stage >= len(pyramid.stages) - 1):
                         self.built = True
-                        print("built")
-                    
-                    if(tiles.tile_map[y][x].stage >= len(tiles.tile_map[y][x].stages)):
-                        tiles.tile_map[y][x].stage = len(tiles.tile_map[y][x].stages) - 1
+                        self.gameContext.built = True
+                    else:
+                        next_stage = self.gameContext.pyramid_stage + 1
+
+                        if(self.gameContext.bricks >= self.gameContext.required_bricks[next_stage]):
+                            self.gameContext.pyramid_stage = next_stage
+                            pyramid.stage = next_stage
+                            self.built = True
+                            #self.gameContext.built = True
+
+        
 
     def render(self, screen, surface):
 
         # screen.fill((186, 246, 255))
         # surface.fill((186, 246, 255))
-        screen.fill((102, 197, 255))
-        surface.fill((102, 197, 255))
+        #screen.fill((102, 197, 255))
+        # surface.fill((102, 197, 255))
         # screen.fill((0, 0, 0))
         # surface.fill((0, 0, 0))
+        screen.fill((0, 0, 0))
+        surface.fill((255, 243, 193))
+        
 
         for y in range(len(tiles.ground_tile_map)):
             for x in range(len(tiles.ground_tile_map[y])):
@@ -197,6 +243,9 @@ class GameState(states.State):
         for y in range(len(tiles.tile_map)):
             for x in range(len(tiles.tile_map[y])):
                 if(tiles.tile_map[y][x] != None):
+
+                    tiles.tile_map[y][x].animate()
+
                     tiles.tile_map[y][x].render(surface)
 
                     if(isinstance(tiles.tile_map[y][x], tiles.ProductionTile) and tiles.tile_map[y][x].has_item):
@@ -216,10 +265,10 @@ class GameState(states.State):
         # converting mouse coordinates
 
         surface.blit(assets.cheese, (PADDING, 0))
-        graphics.renderText(surface, PADDING * 8.2, (PADDING * 4), 24, f'x{self.gameContext.credits}', 0, 1)
+        graphics.renderText(surface, PADDING * 8.2, (PADDING * 4), 24, f'x{self.gameContext.credits}', 0, 1, (178, 0, 0))
         
         
-        graphics.renderText(surface, PADDING, HEIGHT - PADDING * 5, 24, f"Turn: {self.gameContext.turn}")
+        graphics.renderText(surface, PADDING, HEIGHT - PADDING * 5, 24, f"Turn: {self.gameContext.turn}", 0, 0, (178, 0, 0))
         
         self.next_turn_button.update()
         self.next_turn_button.render()
@@ -227,7 +276,22 @@ class GameState(states.State):
         #selector
         imx, imy = states.screen_to_iso(mx, my, ORIGIN_X, ORIGIN_Y)
         if(0 <= imy < len(tiles.tiles_ground) and 0 <= imx < len(tiles.tiles_ground[imy]) and tiles.tiles_ground[imy][imx] != ' '):
-            surface.blit(assets.selector, tiles.coords_to_iso(imx, imy))
+            tx, ty = tiles.coords_to_iso(imx, imy)
+            surface.blit(assets.selector, (tx, ty))
+
+            tile = tiles.tile_map[imy][imx]
+
+            if(not isinstance(tile, tiles.AirTile) and not isinstance(tile, tiles.ForestTile) and not isinstance(tile, tiles.Restricted)):
+                graphics.renderText(surface, tx + (TILE_SIZE / 2), ty + (TILE_SIZE / 2), 25, f"Producing Credits: {tile.credits_produced}", 1, 0, (178, 0, 0))
+                if(isinstance(tile, tiles.ProductionTile)):
+                    graphics.renderText(surface, tx + (TILE_SIZE / 2), ty + (TILE_SIZE / 2) + PADDING * 3, 25, f"Requirements Met: {tile.requirements_met}", 1, 0, (178, 0, 0))
         #selector
 
+
+
+
+
         screen.blit(pygame.transform.smoothscale(surface, (scaled_w, scaled_h)), (x, y))
+
+        scaled_fade = pygame.transform.smoothscale(self.fade_surface, (self.engine.scaled_w, self.engine.scaled_h))
+        screen.blit(scaled_fade, (self.engine.offset_x, self.engine.offset_y))

@@ -7,6 +7,7 @@ class Item:
 
     def __init__(self, image, x, y):
         self.image = image
+        self.name = ""
         self.description = ""
         self.x = x
         self.y = y
@@ -25,6 +26,8 @@ class FactoryItem(Item):
         from tiles import FactoryTile
         self.tile = FactoryTile
         self.cost = 10
+        self.name = "Factory"
+        self.description = "Makes 3 pizzas. Requires connection to 1 Housing and 2 Farms."
 
 class FarmItem(Item):
 
@@ -36,6 +39,8 @@ class FarmItem(Item):
         self.tile = Farm
         self.cost = 2
         self.credits_produced = 1
+        self.name = "Farm"
+        self.description = "Grows products to make pizza"
 
 class RoadItem(Item):
     def __init__(self, x, y):
@@ -43,6 +48,8 @@ class RoadItem(Item):
         from tiles import RoadTile
         self.tile = RoadTile
         self.cost = 1
+        self.name = "Road"
+        self.description = "Connects tiles together"
 
 class MonumentItem(Item):
     def __init__(self, x, y):
@@ -50,6 +57,8 @@ class MonumentItem(Item):
         from tiles import MonumentTile
         self.tile = MonumentTile
         self.cost = 20
+        self.name = "Energy Drink Monument"
+        self.description = "Red Bull is awesome."
 
 class PizzeriaItem(Item):
     def __init__(self, x, y):
@@ -57,6 +66,31 @@ class PizzeriaItem(Item):
         from tiles import PizzeriaTile
         self.tile = PizzeriaTile
         self.cost = 2
+        self.name = "Pizzeria"
+        self.description = "Makes 1 pizza. Requires connection to 1 Farm."
+
+class HousingItem(Item):
+    def __init__(self, x, y):
+        super().__init__(assets.housing_item, x, y)
+        from tiles import Housing
+        self.tile = Housing
+        self.cost = 3
+        self.name = "Housing"
+        self.description = "Supplies workers to Factories."
+
+class DestructionItem(Item):
+    def __init__(self, image, x, y):
+        super().__init__(image, x, y)
+        self.targets = ()
+
+class AxeItem(DestructionItem):
+    def __init__(self, x, y):
+        super().__init__(assets.axe_item, x, y)
+        self.cost = 1
+        from tiles import ForestTile
+        self.targets = (ForestTile, )
+        self.name = "Axe"
+        self.description = "Cuts down forests."
 
 
 

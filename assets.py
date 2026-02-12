@@ -22,8 +22,14 @@ boundingbox = pygame.transform.scale(boundingbox, (TILE_SIZE, TILE_SIZE))
 forest = pygame.image.load(resource_path('assets/forest.png'))
 forest = pygame.transform.scale(forest, (TILE_SIZE, TILE_SIZE))
 
-factory = pygame.image.load(resource_path('assets/factory.png'))
-factory = pygame.transform.scale(factory, (TILE_SIZE, TILE_SIZE))
+factory_1 = pygame.image.load(resource_path('assets/factory_1.png'))
+factory_1 = pygame.transform.scale(factory_1, (TILE_SIZE, TILE_SIZE))
+
+factory_2 = pygame.image.load(resource_path('assets/factory_2.png'))
+factory_2 = pygame.transform.scale(factory_2, (TILE_SIZE, TILE_SIZE))
+
+factory_3 = pygame.image.load(resource_path('assets/factory_3.png'))
+factory_3 = pygame.transform.scale(factory_3, (TILE_SIZE, TILE_SIZE))
 
 pizzeria = pygame.image.load(resource_path('assets/pizzeria.png'))
 pizzeria = pygame.transform.scale(pizzeria, (TILE_SIZE, TILE_SIZE))
@@ -58,6 +64,9 @@ stage_1 = pygame.transform.scale(stage_1, (TILE_SIZE * 3, TILE_SIZE * 3))
 mrpizza = pygame.image.load(resource_path('assets/mrpizza.png'))
 mrpizza = pygame.transform.scale(mrpizza, (TILE_SIZE, TILE_SIZE))
 
+mrpizza_2 = pygame.image.load(resource_path('assets/mrpizza_2.png'))
+mrpizza_2 = pygame.transform.scale(mrpizza_2, (TILE_SIZE, TILE_SIZE))
+
 inventory = pygame.image.load(resource_path('assets/inventory2.png'))
 inventory = pygame.transform.scale(inventory, (128 * SCALE_FACTOR, 64 * SCALE_FACTOR))
 
@@ -85,6 +94,12 @@ road_item = pygame.transform.scale(road_item, (16 * SCALE_FACTOR, 16 * SCALE_FAC
 monument_item = pygame.image.load(resource_path('assets/monument_item.png'))
 monument_item = pygame.transform.scale(monument_item, (16 * SCALE_FACTOR, 16 * SCALE_FACTOR))
 
+axe_item = pygame.image.load(resource_path('assets/axe.png'))
+axe_item = pygame.transform.scale(axe_item, (16 * SCALE_FACTOR, 16 * SCALE_FACTOR))
+
+housing_item = pygame.image.load(resource_path('assets/housing_item.png'))
+housing_item = pygame.transform.scale(housing_item, (16 * SCALE_FACTOR, 16 * SCALE_FACTOR))
+
 platform = pygame.image.load(resource_path('assets/platform2.png'))
 platform = pygame.transform.scale(platform, (TILE_SIZE, TILE_SIZE))
 
@@ -94,8 +109,17 @@ next_turn = pygame.transform.scale(next_turn, (16 * SCALE_FACTOR, 16 * SCALE_FAC
 critics = pygame.image.load(resource_path('assets/critics.png'))
 critics = pygame.transform.scale(critics, (TILE_SIZE, TILE_SIZE))
 
-farm = pygame.image.load(resource_path('assets/farm3.png'))
-farm = pygame.transform.scale(farm, (TILE_SIZE, TILE_SIZE))
+farm_1 = pygame.image.load(resource_path('assets/farm_1.png'))
+farm_1 = pygame.transform.scale(farm_1, (TILE_SIZE, TILE_SIZE))
+
+farm_2 = pygame.image.load(resource_path('assets/farm_2.png'))
+farm_2 = pygame.transform.scale(farm_2, (TILE_SIZE, TILE_SIZE))
+
+farm_3 = pygame.image.load(resource_path('assets/farm_3.png'))
+farm_3 = pygame.transform.scale(farm_3, (TILE_SIZE, TILE_SIZE))
+
+housing = pygame.image.load(resource_path('assets/housing.png'))
+housing = pygame.transform.scale(housing, (TILE_SIZE, TILE_SIZE))
 
 redbull = pygame.image.load(resource_path('assets/redbull0.png'))
 redbull = pygame.transform.scale(redbull, (TILE_SIZE, TILE_SIZE))

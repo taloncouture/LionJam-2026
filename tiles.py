@@ -43,43 +43,55 @@ tiles2 =       [[' ', ' ', ' ', ' ', ' ', ' ', 't', ' ', ' ', ' ', ' ', ' ', ' '
 tile_map = []
 ground_tile_map = []
 
-def place_tile(x, y, tile):
-
-    if(0 <= y < len(tile_map) and 0 <= x < len(tile_map[y]) and type(ground_tile_map[y][x]) is GrassTile and type(tile_map[y][x]) is AirTile):
-        #print(tile_map[y][x])
-        #print(ground_tile_map[y][x])
-        tile_map[y][x] = tile(x, y)
+def is_valid(x, y, tilemap):
+    if(0 <= y < len(tilemap) and 0 <= x < len(tilemap[y])):
         return True
+    else:
+        return False
+
+def place_tile(x, y, tile, tilemap):
+
+    if(0 <= y < len(tilemap) and 0 <= x < len(tilemap[y]) and type(ground_tile_map[y][x]) is GrassTile and type(tilemap[y][x]) is AirTile):
+
+        if(issubclass(tile, FactoryTile)):
+            neighbors = get_neighbors(x, y, ground_tile_map)
+
+            for neighbor in neighbors:
+                print(neighbor)
+                if(neighbor == None or isinstance(neighbor, AirTile)):
+                    tile_map[y][x] = tile(x, y)
+                    return True
+        else:
+            tile_map[y][x] = tile(x, y)
+            return True
     return False
+
+def destroy_tile(x, y, tilemap):
+    tilemap[y][x] = AirTile(x, y)
 
 
 def get_neighbors(x, y, tilemap):
     result = []
-    
-    # if(x > 0 and y > 0):
-    #     result[0][0] = tilemap[y - 1][x - 1]
-    # if(y > 0):
-    #     result[0][1] = tilemap[y - 1][x]
-    # if(x < len(tilemap[0]) - 1 and y > 0):
-    #     result[0][2] = tilemap[y - 1][x + 1]
-    # if(x > 0):
-    #     result[1][0] = tilemap[y][x - 1]
-    # if(x < len(tilemap[0]) - 1):
-    #     result[1][2] = tilemap[y][x + 1]
-    # if(x > 0 and y < len(tilemap) - 1):
-    #     result[2][0] = tilemap[y + 1][x - 1]
-    # if(y < len(tilemap) - 1):
-    #     result[2][1] = tilemap[y + 1][x]
-    # if(y < len(tilemap) - 1 and x < len(tilemap[0]) - 1):
-    #     result[2][2] = tilemap[y + 1][x + 1]
-    if(x > 0):
+
+    if(is_valid(x - 1, y, tilemap)):
         result.append(tilemap[y][x - 1])
-    if(x < len(tilemap[0]) - 1):
+    else:
+        result.append(None)
+    
+    if(is_valid(x + 1, y, tilemap)):
         result.append(tilemap[y][x + 1])
-    if(y > 0):
+    else:
+        result.append(None)
+
+    if(is_valid(x, y - 1, tilemap)):
         result.append(tilemap[y - 1][x])
-    if(y < len(tilemap) - 1):
+    else:
+        result.append(None)
+
+    if(is_valid(x, y + 1, tilemap)):
         result.append(tilemap[y + 1][x])
+    else:
+        result.append(None)
 
     return result
 
@@ -102,7 +114,6 @@ class PizzaResource(Resource):
 class Tile:
 
     def __init__(self, x, y):
-        self.image = assets.grass
         self.x = x
         self.y = y
         self.cost = 0
@@ -110,6 +121,14 @@ class Tile:
         self.network_id = None
         self.required_connections = {}
         self.connected_tiles = {}
+        self.claimable = False
+        self.claimed = None
+        self.image = assets.grass
+
+        self.frames = []
+        self.index = 0
+        self.anim_speed = 0
+
 
     def render(self, surface):
 
@@ -117,7 +136,7 @@ class Tile:
         surface.blit(self.image, (ix, iy - config.HALF_W - config.SCALE_FACTOR))
 
     def update(self):
-        pass
+        self.animate()
 
     def on_click(self):
         pass
@@ -125,10 +144,20 @@ class Tile:
     def place_tile(self):
         pass
 
+    def animate(self):
+        
+        self.index += self.anim_speed
+        if(self.index >= len(self.frames)):
+            self.index = 0
+
+        if(len(self.frames) > 0):
+            self.image = self.frames[int(self.index)]
+
 class ResourceTile(Tile):
     def __init__(self, x, y):
         super().__init__(x, y)
         self.claimed = None
+        self.claimable = True
 
 class ProductionTile(Tile):
     def __init__(self, x, y):
@@ -137,6 +166,9 @@ class ProductionTile(Tile):
         self.required_farms = 0
         self.claimed = None
         self.requirements_met = False
+        self.claimable = True
+
+        self.production_quantity = 1
 
     def produce(self):
         if(self.requirements_met):
@@ -179,10 +211,15 @@ class FactoryTile(ProductionTile):
 
     def __init__(self, x, y):
         super().__init__(x, y)
-        self.image = assets.factory
+        self.image = assets.factory_1
         self.credits_produced = 3
-        self.required_farms = 2
-        self.required_connections = {Farm : 2}
+        self.required_farms = 3
+        self.required_connections = {Farm : 2, Housing : 1, Restricted : 1}
+        self.production_quantity = 3
+        
+        self.frames = [assets.factory_1, assets.factory_2, assets.factory_3]
+        self.anim_speed = 0.02
+
 
 class PizzeriaTile(ProductionTile):
 
@@ -192,7 +229,7 @@ class PizzeriaTile(ProductionTile):
         super().__init__(x, y)
         self.image = assets.pizzeria
         self.credits_produced = 1
-        self.required_connections = {Farm : 1}
+        self.required_connections = {Farm : 1, Restricted : 1}
         
 
 class RoadTile(Tile):
@@ -245,14 +282,12 @@ class Pyramid(Tile):
             ix, iy = coords_to_iso(self.x, self.y)
             surface.blit(self.stages[self.stage], (ix - (config.HALF_W * (2)) - config.SCALE_FACTOR * 2, iy - (config.HALF_H * (5)) - config.HALF_W + config.SCALE_FACTOR))
 
-    def build(self):
-        if(self.stage < len(self.stages) - 1):
-            self.stage += 1
-
 class MRPizza(Tile):
     def __init__(self, x, y):
         super().__init__(x, y)
         self.image = assets.mrpizza
+        self.frames = [assets.mrpizza, assets.mrpizza_2]
+        self.anim_speed = 0.03
 
 class Critics(Tile):
     def __init__(self, x, y):
@@ -263,7 +298,18 @@ class Farm(ResourceTile):
 
     def __init__(self, x, y):
         super().__init__(x, y)
-        self.image = assets.farm
+        self.image = assets.farm_1
+        self.credits_produced = 1
+        self.frames = [assets.farm_1, assets.farm_2, assets.farm_3]
+        self.anim_speed = 0.1
+      
+
+
+class Housing(ResourceTile):
+
+    def __init__(self, x, y):
+        super().__init__(x, y)
+        self.image = assets.housing
         self.credits_produced = 1
 
 class RedBull(Tile):

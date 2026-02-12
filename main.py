@@ -12,7 +12,7 @@ import game
 pygame.init()
 
 clock = pygame.time.Clock()
-screen = pygame.display.set_mode((0, 0), pygame.RESIZABLE)
+screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.RESIZABLE)
 game_surface = pygame.Surface((WIDTH, HEIGHT))
 
 pygame.display.set_caption("Great Pyramid of Pizza")
@@ -27,14 +27,18 @@ def window_to_game(mx, my):
     y = (win_h - int(HEIGHT * scale)) // 2
     return (mx - x) / scale, (my - y) / scale
 
+
+
 def main():
 
-    engine = engine_core.Engine(game_surface)
+    engine = engine_core.Engine(game_surface, screen)
     gameContext = context.GameContext()
 
     gameState = game.GameState(engine, gameContext)
     shopState = shop.ShopState(engine, gameContext)
-    currentState = gameState
+    endState = states.EndState(engine, gameContext)
+    titleState = states.TitleState(engine, gameContext)
+    currentState = titleState
 
     while True:
         for event in pygame.event.get():
@@ -47,7 +51,11 @@ def main():
 
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_e:
-                    if currentState == shopState:
+
+                    if currentState == titleState:
+                        currentState = gameState
+
+                    elif currentState == shopState:
                         currentState.on_close()
                         currentState = gameState
                     elif currentState == gameState:
@@ -55,10 +63,13 @@ def main():
                         currentState = shopState
 
     
+        if(currentState == gameState and gameState.game_finished):
+            currentState = endState
+
 
         #main game loop
 
-        engine.update(screen)
+        engine.update()
 
         #loop goes here
         currentState.update()

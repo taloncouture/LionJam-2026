@@ -32,8 +32,10 @@ class ShopState(State):
 
         self.slots[0][0] = items.RoadItem(self.x, self.y)
         self.slots[0][1] = items.FarmItem(self.x + (16 * SCALE_FACTOR), self.y)
-        self.slots[0][2] = items.PizzeriaItem(self.x + (16 * 2 * SCALE_FACTOR), self.y)
-        self.slots[0][3] = items.FactoryItem(self.x + (16 * 3 * SCALE_FACTOR), self.y)
+        self.slots[0][2] = items.AxeItem(self.x + (16 * 2 * SCALE_FACTOR), self.y)
+        self.slots[0][3] = items.PizzeriaItem(self.x + (16 * 3 * SCALE_FACTOR), self.y)
+        self.slots[0][4] = items.HousingItem(self.x + (16 * 4 * SCALE_FACTOR), self.y)
+        self.slots[0][5] = items.FactoryItem(self.x + (16 * 5 * SCALE_FACTOR), self.y)
         self.slots[1][0] = items.MonumentItem(self.x, self.y + (ITEM_HEIGHT))
 
     def update(self):
@@ -72,20 +74,20 @@ class ShopState(State):
 
     def render(self, screen, surface):
 
-        screen.fill((102, 197, 255))
-        surface.fill((102, 197, 255))
+        screen.fill((0, 0, 0))
+        surface.fill((255, 243, 193))
 
         # screen.fill((185, 157, 51))
         # surface.fill((185, 157, 51))
 
         surface.blit(assets.cheese, ((WIDTH / 2) - (TILE_SIZE / 2), (PADDING * 6)))
-        graphics.renderText(surface, (WIDTH / 2) + PADDING * 3, (PADDING * 5.5) + (TILE_SIZE / 2), 24, f'x{self.gameContext.credits}', 0, 1)
+        graphics.renderText(surface, (WIDTH / 2) + PADDING * 3, (PADDING * 5.5) + (TILE_SIZE / 2), 24, f'x{self.gameContext.credits}', 0, 1, (178, 0, 0))
 
 
         surface.blit(assets.inventory, (self.x, self.y))
 
         for y in range(len(self.slots)):
-            for x in range(len(self.slots)):
+            for x in range(len(self.slots[y])):
                 if(self.slots[y][x] != ' '):
                     self.slots[y][x].render(surface)
 
@@ -98,6 +100,10 @@ class ShopState(State):
 
         surface.blit(assets.shop_border, (self.x - (16 * SCALE_FACTOR), self.y - (16 * SCALE_FACTOR)))
 
-        
+        if(self.selected_x != None and self.selected_y != None and self.slots[self.selected_y][self.selected_x] != ' '):
+            item = self.slots[self.selected_y][self.selected_x]
+            graphics.renderText(surface, WIDTH / 2, HEIGHT - (HEIGHT / 4), 40, f"{item.name}", 1, 0, (178, 0, 0))
+            graphics.renderText(surface, WIDTH / 2, HEIGHT - (HEIGHT / 6), 30, f"Cost: {item.cost}", 1, 0, (178, 0, 0))
+            graphics.renderText(surface, WIDTH / 2, HEIGHT - (HEIGHT / 8), 30, f"Description: {item.description}", 1, 0, (178, 0, 0))
 
         screen.blit(pygame.transform.smoothscale(surface, (self.engine.scaled_w, self.engine.scaled_h)), (self.engine.offset_x, self.engine.offset_y))
