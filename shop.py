@@ -30,9 +30,10 @@ class ShopState(State):
             [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
         ]
 
-        self.slots[0][0] = items.FactoryItem(self.x, self.y)
+        self.slots[0][0] = items.RoadItem(self.x, self.y)
         self.slots[0][1] = items.FarmItem(self.x + (16 * SCALE_FACTOR), self.y)
-        self.slots[0][2] = items.RoadItem(self.x + (16 * 2 * SCALE_FACTOR), self.y)
+        self.slots[0][2] = items.PizzeriaItem(self.x + (16 * 2 * SCALE_FACTOR), self.y)
+        self.slots[0][3] = items.FactoryItem(self.x + (16 * 3 * SCALE_FACTOR), self.y)
         self.slots[1][0] = items.MonumentItem(self.x, self.y + (ITEM_HEIGHT))
 
     def update(self):

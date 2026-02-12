@@ -25,6 +25,9 @@ forest = pygame.transform.scale(forest, (TILE_SIZE, TILE_SIZE))
 factory = pygame.image.load(resource_path('assets/factory.png'))
 factory = pygame.transform.scale(factory, (TILE_SIZE, TILE_SIZE))
 
+pizzeria = pygame.image.load(resource_path('assets/pizzeria.png'))
+pizzeria = pygame.transform.scale(pizzeria, (TILE_SIZE, TILE_SIZE))
+
 road = pygame.image.load(resource_path('assets/road.png'))
 road = pygame.transform.scale(road, (TILE_SIZE, TILE_SIZE))
 
@@ -69,6 +72,9 @@ inventory_selected = pygame.transform.scale(inventory_selected, (16 * SCALE_FACT
 
 factory_item = pygame.image.load(resource_path('assets/factory_item.png'))
 factory_item = pygame.transform.scale(factory_item, (16 * SCALE_FACTOR, 16 * SCALE_FACTOR))
+
+pizzeria_item = pygame.image.load(resource_path('assets/pizzeria_item.png'))
+pizzeria_item = pygame.transform.scale(pizzeria_item, (16 * SCALE_FACTOR, 16 * SCALE_FACTOR))
 
 farm_item = pygame.image.load(resource_path('assets/farm_item.png'))
 farm_item = pygame.transform.scale(farm_item, (16 * SCALE_FACTOR, 16 * SCALE_FACTOR))

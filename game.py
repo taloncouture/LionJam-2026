@@ -5,6 +5,13 @@ import tiles
 import states
 import graphics
 import pygame
+from collections import deque
+
+def get_key(d, value):
+    for k, v in d.items():
+        if v == value:
+            return k
+    return None 
 
 class GameState(states.State):
     def __init__(self, engine, gameContext):
@@ -13,13 +20,115 @@ class GameState(states.State):
         self.gameContext = gameContext
         self.built = False
 
+        self.roads = []
+
         self.next_turn_button = items.Button(assets.next_turn, WIDTH - (16 * SCALE_FACTOR) - PADDING, HEIGHT - (16 * SCALE_FACTOR) - PADDING, self.engine)
+
+    
+    # cool algorithm i found
+    def generate_connected_tiles(self, start, tilemap):
+        visited = set()
+        queue = deque([start])
+        collected = set()
+
+        while queue:
+            x, y = queue.popleft()
+
+            if(x, y) in visited:
+                continue
+
+            visited.add((x, y))
+            collected.add((x, y))
+
+            for tile in tiles.get_neighbors(x, y, tilemap):
+                if tile is None:
+                    continue
+
+                if(isinstance(tile, tiles.RoadTile)):
+                    queue.append((tile.x, tile.y))
+                else:
+                    collected.add((tile.x, tile.y))
+
+        return collected
+    
+    # function of insanity
+    def update_connections(self, tile, claim=True):
+
+        if not tile.required_connections:
+            return
+        
+        neighbors = tiles.get_neighbors(tile.x, tile.y, tiles.tile_map)
+        connected_tiles = set()
+        for neighbor in neighbors:
+            if(neighbor and isinstance(neighbor, tiles.RoadTile)):
+                connected_tiles.update(self.generate_connected_tiles((neighbor.x, neighbor.y), tiles.tile_map))
+
+        if not hasattr(tile, 'connected_tiles'):
+            tile.connected_tiles = {}
+
+        for required_type in tile.required_connections:
+
+            if(required_type not in tile.connected_tiles):
+                tile.connected_tiles[required_type] = set()
+
+            #tile.connected_tiles.setdefault(cls, set())
+
+        for tx, ty in connected_tiles:
+            t = tiles.tile_map[ty][tx]
+            
+            for required_class, required_count in tile.required_connections.items():
+
+                if len(tile.connected_tiles[required_class]) >= required_count:
+                    #print("fulfilled")
+                    continue
+
+                if(isinstance(t, required_class)):
+
+                    if getattr(t, 'claimed', None) in (None, tile):
+                        tile.connected_tiles[required_class].add(t)
+
+
+        requirements_met = all(len(tile.connected_tiles[t_type]) >= count for t_type, count in tile.required_connections.items())
+
+        if(requirements_met):
+            for required_type, required_count in tile.required_connections.items():
+
+                owned_count = sum(1 for t in tile.connected_tiles[required_type] if t.claimed is tile)
+
+                to_claim_count = required_count - owned_count
+
+                for t in tile.connected_tiles[required_type]:
+                    if(to_claim_count <= 0):
+                        break
+                    
+                    if claim and getattr(t, 'claimed', None) in (None, tile):
+                        t.claimed = tile
+                        to_claim_count -= 1
+
+        if requirements_met:
+            print(f"{type(tile).__name__} at {(tile.x, tile.y)} requirements met!")
+            if(not tile.requirements_met):
+                tile.requirements_met = True
 
 
     def place_item(self, x, y):
         if(0 <= y < len(tiles.tile_map) and 0 <= x < len(tiles.tile_map[y])):
             if(tiles.place_tile(x, y, self.gameContext.selected_item.tile)):
                 self.gameContext.selected_item = None
+
+                for y in range(len(tiles.tile_map)):
+                    for x in range(len(tiles.tile_map[y])):
+                        tile = tiles.tile_map[y][x]
+                        if tile and tile.required_connections:
+                            self.update_connections(tile, claim=False)
+
+                for y in range(len(tiles.tile_map)):
+                    for x in range(len(tiles.tile_map[y])):
+                        tile = tiles.tile_map[y][x]
+                        if tile and tile.required_connections:
+                            self.update_connections(tile, claim=True)
+
+                    
                 return True
         return False
     
@@ -28,10 +137,13 @@ class GameState(states.State):
 
         for y in range(len(tiles.tile_map)):
             for x in range(len(tiles.tile_map[y])):
+                
+                self.gameContext.credits += tiles.tile_map[y][x].credits_produced
+
                 tiles.tile_map[y][x].update()
-                if(type(tiles.tile_map[y][x]) is tiles.FactoryTile and tiles.tile_map[y][x].has_item == True):
-                    tx, ty = tiles.coords_to_iso(x, y)
-                    self.engine.render(assets.pizza, tx, ty - TILE_SIZE)
+                # if(type(tiles.tile_map[y][x]) == tiles.FactoryTile and tiles.tile_map[y][x].has_item == True):
+                #     tx, ty = tiles.coords_to_iso(x, y)
+                #     self.engine.render(assets.pizza, tx, ty - TILE_SIZE)
                     #print("pizza!")
 
     def on_click(self):
@@ -52,8 +164,9 @@ class GameState(states.State):
             if(0 <= selected_y < len(tiles.tile_map) and 0 <= selected_x < len(tiles.tile_map[selected_y])):
                 if(isinstance(tiles.tile_map[selected_y][selected_x], tiles.ProductionTile)):
                     if(tiles.tile_map[selected_y][selected_x].collect()):
-                        self.gameContext.bricks += 10
-                        print(self.gameContext.bricks)
+                        self.gameContext.bricks += 1
+                        print("clicked")
+                        #print(self.gameContext.bricks)
         
 
     def update(self):
@@ -88,7 +201,7 @@ class GameState(states.State):
 
                     if(isinstance(tiles.tile_map[y][x], tiles.ProductionTile) and tiles.tile_map[y][x].has_item):
                         ix, iy = tiles.coords_to_iso(x, y)
-                        surface.blit(assets.pizza, (ix, iy - TILE_SIZE))
+                        surface.blit(tiles.tile_map[y][x].resource.image, (ix, iy - TILE_SIZE))
 
          # converting mouse coordinates - kind of weird (somehow works) do not change
         win_w, win_h = screen.get_size()

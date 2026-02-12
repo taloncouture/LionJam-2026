@@ -52,6 +52,53 @@ def place_tile(x, y, tile):
         return True
     return False
 
+
+def get_neighbors(x, y, tilemap):
+    result = []
+    
+    # if(x > 0 and y > 0):
+    #     result[0][0] = tilemap[y - 1][x - 1]
+    # if(y > 0):
+    #     result[0][1] = tilemap[y - 1][x]
+    # if(x < len(tilemap[0]) - 1 and y > 0):
+    #     result[0][2] = tilemap[y - 1][x + 1]
+    # if(x > 0):
+    #     result[1][0] = tilemap[y][x - 1]
+    # if(x < len(tilemap[0]) - 1):
+    #     result[1][2] = tilemap[y][x + 1]
+    # if(x > 0 and y < len(tilemap) - 1):
+    #     result[2][0] = tilemap[y + 1][x - 1]
+    # if(y < len(tilemap) - 1):
+    #     result[2][1] = tilemap[y + 1][x]
+    # if(y < len(tilemap) - 1 and x < len(tilemap[0]) - 1):
+    #     result[2][2] = tilemap[y + 1][x + 1]
+    if(x > 0):
+        result.append(tilemap[y][x - 1])
+    if(x < len(tilemap[0]) - 1):
+        result.append(tilemap[y][x + 1])
+    if(y > 0):
+        result.append(tilemap[y - 1][x])
+    if(y < len(tilemap) - 1):
+        result.append(tilemap[y + 1][x])
+
+    return result
+
+
+
+class Resource():
+    def __init__(self, image, x, y):
+        self.image = image
+        self.x = x
+        self.y = y
+
+
+class PizzaResource(Resource):
+
+    image = assets.pizza
+
+    def __init__(self, image, x, y):
+        super().__init__(image, x, y)
+
 class Tile:
 
     def __init__(self, x, y):
@@ -59,6 +106,10 @@ class Tile:
         self.x = x
         self.y = y
         self.cost = 0
+        self.credits_produced = 0
+        self.network_id = None
+        self.required_connections = {}
+        self.connected_tiles = {}
 
     def render(self, surface):
 
@@ -74,13 +125,22 @@ class Tile:
     def place_tile(self):
         pass
 
+class ResourceTile(Tile):
+    def __init__(self, x, y):
+        super().__init__(x, y)
+        self.claimed = None
+
 class ProductionTile(Tile):
     def __init__(self, x, y):
         super().__init__(x, y)
         self.has_item = False
+        self.required_farms = 0
+        self.claimed = None
+        self.requirements_met = False
 
     def produce(self):
-        self.has_item = True
+        if(self.requirements_met):
+            self.has_item = True
 
     def collect(self):
         if(self.has_item):
@@ -115,9 +175,25 @@ class PlatformTile(Tile):
 
 class FactoryTile(ProductionTile):
 
+    resource = PizzaResource
+
     def __init__(self, x, y):
         super().__init__(x, y)
         self.image = assets.factory
+        self.credits_produced = 3
+        self.required_farms = 2
+        self.required_connections = {Farm : 2}
+
+class PizzeriaTile(ProductionTile):
+
+    resource = PizzaResource
+
+    def __init__(self, x, y):
+        super().__init__(x, y)
+        self.image = assets.pizzeria
+        self.credits_produced = 1
+        self.required_connections = {Farm : 1}
+        
 
 class RoadTile(Tile):
     def __init__(self, x, y):
@@ -129,6 +205,7 @@ class MonumentTile(Tile):
     def __init__(self, x, y):
         super().__init__(x, y)
         self.image = assets.monument
+        self.credits_produced = 5
 
 class CheeseTile(Tile):
     def __init__(self, x, y):
@@ -182,11 +259,12 @@ class Critics(Tile):
         super().__init__(x, y)
         self.image = assets.critics
 
-class Farm(Tile):
+class Farm(ResourceTile):
 
     def __init__(self, x, y):
         super().__init__(x, y)
         self.image = assets.farm
+        self.credits_produced = 1
 
 class RedBull(Tile):
     def __init__(self, x, y):
@@ -195,6 +273,11 @@ class RedBull(Tile):
 
 
 #tile_list = {'f': FactoryTile, 't': ForestTile, '0': GrassTile}
+
+
+
+
+
 
 
 for y in range(len(tiles2)):
