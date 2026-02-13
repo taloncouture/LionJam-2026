@@ -60,6 +60,15 @@ class MonumentItem(Item):
         self.name = "Energy Drink Monument"
         self.description = "Red Bull is awesome."
 
+class TowerItem(Item):
+    def __init__(self, x, y):
+        super().__init__(assets.tower_item, x, y)
+        from tiles import Tower
+        self.tile = Tower
+        self.cost = 10
+        self.name = "Military Tower"
+        self.description = "Defends from Nolats within 3 blocks"
+
 class PizzeriaItem(Item):
     def __init__(self, x, y):
         super().__init__(assets.pizzeria_item, x, y)

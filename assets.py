@@ -34,13 +34,16 @@ factory_3 = pygame.transform.scale(factory_3, (TILE_SIZE, TILE_SIZE))
 pizzeria = pygame.image.load(resource_path('assets/pizzeria.png'))
 pizzeria = pygame.transform.scale(pizzeria, (TILE_SIZE, TILE_SIZE))
 
+tower = pygame.image.load(resource_path('assets/tower.png'))
+tower = pygame.transform.scale(tower, (TILE_SIZE, TILE_SIZE))
+
 road = pygame.image.load(resource_path('assets/road.png'))
 road = pygame.transform.scale(road, (TILE_SIZE, TILE_SIZE))
 
 monument = pygame.image.load(resource_path('assets/monument.png'))
 monument = pygame.transform.scale(monument, (TILE_SIZE, TILE_SIZE))
 
-cheese = pygame.image.load(resource_path('assets/cheese.png'))
+cheese = pygame.image.load(resource_path('assets/gem.png'))
 cheese = pygame.transform.scale(cheese, (TILE_SIZE, TILE_SIZE))
 
 pizza = pygame.image.load(resource_path('assets/pizza.png'))
@@ -66,6 +69,18 @@ mrpizza = pygame.transform.scale(mrpizza, (TILE_SIZE, TILE_SIZE))
 
 mrpizza_2 = pygame.image.load(resource_path('assets/mrpizza_2.png'))
 mrpizza_2 = pygame.transform.scale(mrpizza_2, (TILE_SIZE, TILE_SIZE))
+
+nolat_1 = pygame.image.load(resource_path('assets/nolat_1.png'))
+nolat_1 = pygame.transform.scale(nolat_1, (TILE_SIZE, TILE_SIZE))
+
+nolat_2 = pygame.image.load(resource_path('assets/nolat_2.png'))
+nolat_2 = pygame.transform.scale(nolat_2, (TILE_SIZE, TILE_SIZE))
+
+nolat_1_1 = pygame.image.load(resource_path('assets/nolat_1_1.png'))
+nolat_1_1 = pygame.transform.scale(nolat_1_1, (TILE_SIZE, TILE_SIZE))
+
+nolat_2_1 = pygame.image.load(resource_path('assets/nolat_2_1.png'))
+nolat_2_1 = pygame.transform.scale(nolat_2_1, (TILE_SIZE, TILE_SIZE))
 
 inventory = pygame.image.load(resource_path('assets/inventory2.png'))
 inventory = pygame.transform.scale(inventory, (128 * SCALE_FACTOR, 64 * SCALE_FACTOR))
@@ -94,6 +109,9 @@ road_item = pygame.transform.scale(road_item, (16 * SCALE_FACTOR, 16 * SCALE_FAC
 monument_item = pygame.image.load(resource_path('assets/monument_item.png'))
 monument_item = pygame.transform.scale(monument_item, (16 * SCALE_FACTOR, 16 * SCALE_FACTOR))
 
+tower_item = pygame.image.load(resource_path('assets/tower_item.png'))
+tower_item = pygame.transform.scale(tower_item, (16 * SCALE_FACTOR, 16 * SCALE_FACTOR))
+
 axe_item = pygame.image.load(resource_path('assets/axe.png'))
 axe_item = pygame.transform.scale(axe_item, (16 * SCALE_FACTOR, 16 * SCALE_FACTOR))
 
@@ -102,6 +120,9 @@ housing_item = pygame.transform.scale(housing_item, (16 * SCALE_FACTOR, 16 * SCA
 
 platform = pygame.image.load(resource_path('assets/platform2.png'))
 platform = pygame.transform.scale(platform, (TILE_SIZE, TILE_SIZE))
+
+nolat_platform = pygame.image.load(resource_path('assets/nolat_platform.png'))
+nolat_platform = pygame.transform.scale(nolat_platform, (TILE_SIZE, TILE_SIZE))
 
 next_turn = pygame.image.load(resource_path('assets/next_turn.png'))
 next_turn = pygame.transform.scale(next_turn, (16 * SCALE_FACTOR, 16 * SCALE_FACTOR))

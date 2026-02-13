@@ -11,5 +11,6 @@ class GameContext:
         self.built = False
         self.turn = 1
         self.production_tiles = 0
+        self.lives = 3
 
         #self.next_network_id = 1

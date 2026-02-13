@@ -36,7 +36,8 @@ class ShopState(State):
         self.slots[0][3] = items.PizzeriaItem(self.x + (16 * 3 * SCALE_FACTOR), self.y)
         self.slots[0][4] = items.HousingItem(self.x + (16 * 4 * SCALE_FACTOR), self.y)
         self.slots[0][5] = items.FactoryItem(self.x + (16 * 5 * SCALE_FACTOR), self.y)
-        self.slots[1][0] = items.MonumentItem(self.x, self.y + (ITEM_HEIGHT))
+        self.slots[0][6] = items.TowerItem(self.x + (ITEM_WIDTH * 6), self.y)
+        self.slots[0][7] = items.MonumentItem(self.x + (ITEM_WIDTH * 7), self.y)
 
     def update(self):
         

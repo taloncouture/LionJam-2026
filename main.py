@@ -63,7 +63,7 @@ def main():
                         currentState = shopState
 
     
-        if(currentState == gameState and gameState.game_finished):
+        if((currentState == gameState and gameState.game_finished) or (currentState == gameState and gameContext.lives <= 0)):
             currentState = endState
 
 

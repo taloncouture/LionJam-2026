@@ -6,6 +6,7 @@ import states
 import graphics
 import pygame
 from collections import deque
+import random
 
 def get_key(d, value):
     for k, v in d.items():
@@ -152,16 +153,41 @@ class GameState(states.State):
 
         self.gameContext.turn += 1
 
+        actors = []
+
+        spawning_nolat = False
+        chance = random.random()
+        if(chance < tiles.Nolat.spawn_chance):
+            spawning_nolat = True
+
+        if(spawning_nolat):
+            platform = random.choice(tiles.nolat_platforms)
+            platform.spawn()
+
         for y in range(len(tiles.tile_map)):
             for x in range(len(tiles.tile_map[y])):
                 
                 self.gameContext.credits += tiles.tile_map[y][x].credits_produced
 
-                tiles.tile_map[y][x].update()
+                actors.append(tiles.tile_map[y][x])
                 # if(type(tiles.tile_map[y][x]) == tiles.FactoryTile and tiles.tile_map[y][x].has_item == True):
                 #     tx, ty = tiles.coords_to_iso(x, y)
                 #     self.engine.render(assets.pizza, tx, ty - TILE_SIZE)
                     #print("pizza!")
+
+        for tile in actors:
+            tile.update()
+            if(isinstance(tile, tiles.MilitaryTile)):
+                tile.lookout()
+
+        for y in range(len(tiles.tile_map)):
+            for x in range(len(tiles.tile_map[y])):
+                tile = tiles.tile_map[y][x]
+                if(isinstance(tile, tiles.EnemyTile)):
+                    if(isinstance(tiles.ground_tile_map[tile.y][tile.x], tiles.PlatformTile)):
+                        tile.destroy()
+                        self.gameContext.lives -= 1
+                        print(self.gameContext.lives)
 
 
 
@@ -192,6 +218,8 @@ class GameState(states.State):
                     self.gameContext.bricks += tiles.tile_map[selected_y][selected_x].production_quantity
                     print(self.gameContext.bricks)
                         #print(self.gameContext.bricks)
+            if(isinstance(tiles.tile_map[selected_y][selected_x], tiles.EnemyTile) or isinstance(tiles.tile_map[selected_y][selected_x], tiles.MilitaryTile)):
+                tiles.tile_map[selected_y][selected_x].on_click()
         
 
     def update(self):
@@ -245,6 +273,10 @@ class GameState(states.State):
                 if(tiles.tile_map[y][x] != None):
 
                     tiles.tile_map[y][x].animate()
+
+                    if(isinstance(tiles.tile_map[y][x], tiles.EnemyTile)):
+                        if(tiles.tile_map[y][x].occupied_tile != None): 
+                            tiles.tile_map[y][x].occupied_tile.render(surface)
 
                     tiles.tile_map[y][x].render(surface)
 

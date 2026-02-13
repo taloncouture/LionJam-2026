@@ -56,10 +56,17 @@ class EndState(State):
         screen.fill((0, 0, 0))
         surface.fill((255, 243, 193))
 
-        graphics.renderText(surface, WIDTH / 2, self.text_y, 60, "Thanks For Playing!", 1, 0, (178, 0, 0))
-        graphics.renderText(surface, WIDTH / 2, self.text_y + 100, 50, f"Turns: {self.gameContext.turn}", 1, 0, (178, 0, 0))
-        graphics.renderText(surface, WIDTH / 2, self.text_y + 200, 50, f"Pizzas Cooked: {self.gameContext.bricks}", 1, 0, (178, 0, 0))
-        graphics.renderText(surface, WIDTH / 2, self.text_y + 400, 25, "Created by Talon Couture", 1, 0, (178, 0, 0))
+        message = ""
+        if(self.gameContext.lives <= 0):
+            message = "Game Over"
+        else:
+            message = "You Built The Pyramid!"
+
+        graphics.renderText(surface, WIDTH / 2, self.text_y, 100, message, 1, 0, (178, 0, 0))
+        graphics.renderText(surface, WIDTH / 2, self.text_y + 150, 60, "Thanks For Playing!", 1, 0, (178, 0, 0))
+        graphics.renderText(surface, WIDTH / 2, self.text_y + 250, 50, f"Turns: {self.gameContext.turn}", 1, 0, (178, 0, 0))
+        graphics.renderText(surface, WIDTH / 2, self.text_y + 350, 50, f"Pizzas Cooked: {self.gameContext.bricks}", 1, 0, (178, 0, 0))
+        graphics.renderText(surface, WIDTH / 2, self.text_y + 500, 25, "Created by Talon Couture", 1, 0, (178, 0, 0))
 
         screen.blit(pygame.transform.smoothscale(surface, (self.engine.scaled_w, self.engine.scaled_h)), (self.engine.offset_x, self.engine.offset_y))
 
