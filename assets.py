@@ -1,4 +1,5 @@
 import pygame
+from pygame import mixer
 from config import *
 import sys
 import os
@@ -9,6 +10,21 @@ def resource_path(relative_path):
     except Exception:
         base_path = os.path.abspath(".")
     return os.path.join(base_path, relative_path)
+
+mixer.init()
+
+open_can = mixer.Sound(resource_path('assets/can_open.wav'))
+click = mixer.Sound(resource_path('assets/click.wav'))
+collect = mixer.Sound(resource_path('assets/collect.mp3'))
+construct = mixer.Sound(resource_path('assets/construct.mp3'))
+pizza_sound = mixer.Sound(resource_path('assets/pizza_sound.wav'))
+pizza_sound_2 = mixer.Sound(resource_path('assets/pizza_sound_2.wav'))
+pizza_sound_3 = mixer.Sound(resource_path('assets/pizza_sound_3.wav'))
+lose = mixer.Sound(resource_path('assets/lose.mp3'))
+
+gamemusic = mixer.music.load(resource_path('assets/gamemusic.mp3'))
+mixer.music.set_volume(0.1)
+mixer.music.play(-1)
 
 grass = pygame.image.load(resource_path('assets/grass_sand.png'))
 grass = pygame.transform.scale(grass, (TILE_SIZE, TILE_SIZE))
@@ -118,6 +134,9 @@ axe_item = pygame.transform.scale(axe_item, (16 * SCALE_FACTOR, 16 * SCALE_FACTO
 housing_item = pygame.image.load(resource_path('assets/housing_item.png'))
 housing_item = pygame.transform.scale(housing_item, (16 * SCALE_FACTOR, 16 * SCALE_FACTOR))
 
+energydrink_item = pygame.image.load(resource_path('assets/energydrink_item.png'))
+energydrink_item = pygame.transform.scale(energydrink_item, (16 * SCALE_FACTOR, 16 * SCALE_FACTOR))
+
 platform = pygame.image.load(resource_path('assets/platform2.png'))
 platform = pygame.transform.scale(platform, (TILE_SIZE, TILE_SIZE))
 
@@ -144,4 +163,16 @@ housing = pygame.transform.scale(housing, (TILE_SIZE, TILE_SIZE))
 
 redbull = pygame.image.load(resource_path('assets/redbull0.png'))
 redbull = pygame.transform.scale(redbull, (TILE_SIZE, TILE_SIZE))
+
+energydrink = pygame.image.load(resource_path('assets/energydrink.png'))
+energydrink = pygame.transform.scale(energydrink, (TILE_SIZE, TILE_SIZE))
+
+explode_1 = pygame.image.load(resource_path('assets/explode_1.png'))
+explode_1 = pygame.transform.scale(explode_1, (TILE_SIZE, TILE_SIZE))
+
+explode_2 = pygame.image.load(resource_path('assets/explode_2.png'))
+explode_2 = pygame.transform.scale(explode_2, (TILE_SIZE, TILE_SIZE))
+
+explode_3 = pygame.image.load(resource_path('assets/explode_3.png'))
+explode_3 = pygame.transform.scale(explode_3, (TILE_SIZE, TILE_SIZE))
 

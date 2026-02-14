@@ -1,6 +1,9 @@
 import assets
 import config
 import random
+import indicator
+import pygame
+import animation
 
 def coords_to_iso(x, y):
 
@@ -155,6 +158,8 @@ class Tile:
         self.claimed = None
         self.image = assets.grass
         self.building = False
+        self.indicator = None
+        self.indicator_quantity = 0
 
         self.frames = []
         self.index = 0
@@ -166,6 +171,9 @@ class Tile:
         ix, iy = coords_to_iso(self.x, self.y)
         surface.blit(self.image, (ix, iy - config.HALF_W - config.SCALE_FACTOR))
 
+        if(self.indicator != None and self.indicator_quantity > 0):
+            self.indicator.render(surface)
+
     def update(self):
         self.animate()
 
@@ -174,6 +182,10 @@ class Tile:
 
     def place_tile(self):
         pass
+
+    def destroy(self):
+        tile_map[self.y][self.x] = AirTile(self.x, self.y)
+        pygame.mixer.Sound.play(assets.construct)
 
     def animate(self):
         
@@ -194,24 +206,27 @@ class ResourceTile(Tile):
 class ProductionTile(Tile):
     def __init__(self, x, y):
         super().__init__(x, y)
-        self.has_item = False
         self.required_farms = 0
         self.claimed = None
         self.requirements_met = False
         self.claimable = True
         self.building = True
+        self.production_quantity = 0
 
-        self.production_quantity = 1
+        self.produced = 0
 
     def produce(self):
         if(self.requirements_met):
-            self.has_item = True
+            self.indicator_quantity += self.production_quantity
 
     def collect(self):
-        if(self.has_item):
-            self.has_item = False
-            return True
-        return False
+        if(self.indicator_quantity > 0):
+            result = self.indicator_quantity
+            pygame.mixer.Sound.play(assets.collect)
+            pygame.mixer.Sound.play(random.choice([assets.pizza_sound, assets.pizza_sound_2, assets.pizza_sound_3]))
+            self.indicator_quantity = 0
+            return result
+        return 0
 
     def update(self):
         self.produce()
@@ -246,13 +261,15 @@ class FactoryTile(ProductionTile):
     def __init__(self, x, y):
         super().__init__(x, y)
         self.image = assets.factory_1
-        self.credits_produced = 3
+        self.credits_produced = 1
         self.required_farms = 3
         self.required_connections = {Farm : 2, Housing : 1, Restricted : 1}
         self.production_quantity = 3
         
         self.frames = [assets.factory_1, assets.factory_2, assets.factory_3]
         self.anim_speed = 0.02
+
+        self.indicator = indicator.PizzaIndicator(self.x, self.y, self.production_quantity)
 
 
 class PizzeriaTile(ProductionTile):
@@ -263,7 +280,11 @@ class PizzeriaTile(ProductionTile):
         super().__init__(x, y)
         self.image = assets.pizzeria
         self.credits_produced = 1
+        self.production_quantity = 1
         self.required_connections = {Farm : 1, Restricted : 1}
+        self.indicator = indicator.PizzaIndicator(self.x, self.y, self.production_quantity)
+        
+
         
 
 class RoadTile(Tile):
@@ -360,23 +381,31 @@ class Tower(MilitaryTile):
         super().__init__(x, y)
         self.image = assets.tower
         self.building = True
+        self.age = 0
+        self.indicator = indicator.AttackIndicator(self.x, self.y, 0)
 
     def on_click(self):
         self.attack()
+        self.indicator_quantity = 0
     
     def attack(self):
-        neighbors = get_neighbors(self.x, self.y, tile_map)
-        for neighbor in neighbors:
-            if(isinstance(neighbor, EnemyTile)):
-                neighbor.destroy()
+        if(self.age > 0):
+            neighbors = get_neighbors(self.x, self.y, tile_map)
+            for neighbor in neighbors:
+                if(isinstance(neighbor, EnemyTile)):
+                    neighbor.destroy()
 
     def lookout(self):
         print(f"Tower: {(self.x, self.y)} looking out")
+        self.indicator_quantity = 0
 
         neighbors = get_neighbors(self.x, self.y, tile_map)
         for neighbor in neighbors:
             if(isinstance(neighbor, EnemyTile)):
-                print("Im in range of an enemy!")
+                self.indicator_quantity += 1
+
+    def update(self):
+        self.age += 1
 
         
 
@@ -415,7 +444,7 @@ class EnemyTile(Tile):
 
 class Nolat(EnemyTile):
 
-    spawn_chance = 0.25
+    spawn_chance = 0.4
 
     def __init__(self, x, y):
         super().__init__(x, y)
@@ -426,12 +455,20 @@ class Nolat(EnemyTile):
         self.occupied_tile = None
 
     def on_click(self):
-        print("clicked")
-        self.destroy()
+        # print("clicked")
+        # self.destroy()
+        pass
 
 
     def destroy(self):
-        tile_map[self.y][self.x] = AirTile(self.x, self.y)
+        if(self.occupied_tile != None): 
+            tile_map[self.y][self.x] = self.occupied_tile
+        else:
+            tile_map[self.y][self.x] = AirTile(self.x, self.y)
+
+        ix, iy = coords_to_iso(self.x, self.y)
+        pop_anim = animation.Animation(ix, iy, [assets.explode_1, assets.explode_2, assets.explode_3], 0.3)
+        pygame.mixer.Sound.play(assets.open_can)
 
     def pathfind(self):
         neighbors = get_neighbors(self.x, self.y, tile_map)

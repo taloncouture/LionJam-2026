@@ -7,6 +7,7 @@ import graphics
 import pygame
 from collections import deque
 import random
+import animation
 
 def get_key(d, value):
     for k, v in d.items():
@@ -177,6 +178,8 @@ class GameState(states.State):
 
         for tile in actors:
             tile.update()
+
+        for tile in actors:
             if(isinstance(tile, tiles.MilitaryTile)):
                 tile.lookout()
 
@@ -187,7 +190,7 @@ class GameState(states.State):
                     if(isinstance(tiles.ground_tile_map[tile.y][tile.x], tiles.PlatformTile)):
                         tile.destroy()
                         self.gameContext.lives -= 1
-                        print(self.gameContext.lives)
+                        pygame.mixer.Sound.play(assets.lose)
 
 
 
@@ -196,27 +199,29 @@ class GameState(states.State):
         my = self.engine.mouse_y
         selected_x, selected_y = states.screen_to_iso(mx, my, ORIGIN_X, ORIGIN_Y)
 
+        if(self.next_turn_button.selected == True):
+            self.next_turn_button.selected = False
+            self.next_turn()
+            pygame.mixer.Sound.play(assets.click)
+
         if(self.gameContext.selected_item != None and self.gameContext.selected_item.cost <= self.gameContext.credits):
             cost = self.gameContext.selected_item.cost
 
             if(isinstance(self.gameContext.selected_item, items.DestructionItem)):
                 if(tiles.is_valid(selected_x, selected_y, tiles.tile_map) and isinstance(tiles.tile_map[selected_y][selected_x], self.gameContext.selected_item.targets)):
-                    tiles.destroy_tile(selected_x, selected_y, tiles.tile_map)
+                    tiles.tile_map[selected_y][selected_x].destroy()
+                    self.gameContext.selected_item = None
                     self.gameContext.credits -= cost
 
 
             elif(self.place_item(selected_x, selected_y)):
                 self.gameContext.credits -= cost
-
-        elif(self.next_turn_button.selected == True):
-            self.next_turn_button.selected = False
-            self.next_turn()
+                pygame.mixer.Sound.play(assets.construct)
         
         if(0 <= selected_y < len(tiles.tile_map) and 0 <= selected_x < len(tiles.tile_map[selected_y])):
             if(isinstance(tiles.tile_map[selected_y][selected_x], tiles.ProductionTile)):
-                if(tiles.tile_map[selected_y][selected_x].collect()):
-                    self.gameContext.bricks += tiles.tile_map[selected_y][selected_x].production_quantity
-                    print(self.gameContext.bricks)
+                self.gameContext.bricks += tiles.tile_map[selected_y][selected_x].collect()
+                    #print(self.gameContext.bricks)
                         #print(self.gameContext.bricks)
             if(isinstance(tiles.tile_map[selected_y][selected_x], tiles.EnemyTile) or isinstance(tiles.tile_map[selected_y][selected_x], tiles.MilitaryTile)):
                 tiles.tile_map[selected_y][selected_x].on_click()
@@ -229,6 +234,14 @@ class GameState(states.State):
             if self.fade_alpha < 0:
                 self.fade_alpha = 0
         self.fade_surface.set_alpha(self.fade_alpha)
+
+        inactive = set()
+        for anim in animation.animations:
+            anim.update()
+            if(anim.active == False):
+                inactive.add(anim)
+
+        animation.animations -= inactive
 
 
         for y in range(len(tiles.tile_map)):
@@ -280,9 +293,9 @@ class GameState(states.State):
 
                     tiles.tile_map[y][x].render(surface)
 
-                    if(isinstance(tiles.tile_map[y][x], tiles.ProductionTile) and tiles.tile_map[y][x].has_item):
-                        ix, iy = tiles.coords_to_iso(x, y)
-                        surface.blit(tiles.tile_map[y][x].resource.image, (ix, iy - TILE_SIZE))
+                    # if(isinstance(tiles.tile_map[y][x], tiles.ProductionTile) and tiles.tile_map[y][x].has_item):
+                    #     ix, iy = tiles.coords_to_iso(x, y)
+                    #     surface.blit(tiles.tile_map[y][x].resource.image, (ix, iy - TILE_SIZE))
 
          # converting mouse coordinates - kind of weird (somehow works) do not change
         win_w, win_h = screen.get_size()
@@ -295,6 +308,9 @@ class GameState(states.State):
         mx = (mx - x) / scale
         my = (my - y) / scale
         # converting mouse coordinates
+
+        for anim in animation.animations:
+            anim.render(surface)
 
         surface.blit(assets.cheese, (PADDING, 0))
         graphics.renderText(surface, PADDING * 8.2, (PADDING * 4), 24, f'x{self.gameContext.credits}', 0, 1, (178, 0, 0))

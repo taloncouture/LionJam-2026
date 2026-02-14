@@ -74,7 +74,7 @@ class PizzeriaItem(Item):
         super().__init__(assets.pizzeria_item, x, y)
         from tiles import PizzeriaTile
         self.tile = PizzeriaTile
-        self.cost = 2
+        self.cost = 3
         self.name = "Pizzeria"
         self.description = "Makes 1 pizza. Requires connection to 1 Farm."
 
@@ -83,7 +83,7 @@ class HousingItem(Item):
         super().__init__(assets.housing_item, x, y)
         from tiles import Housing
         self.tile = Housing
-        self.cost = 3
+        self.cost = 5
         self.name = "Housing"
         self.description = "Supplies workers to Factories."
 
@@ -96,10 +96,19 @@ class AxeItem(DestructionItem):
     def __init__(self, x, y):
         super().__init__(assets.axe_item, x, y)
         self.cost = 1
-        from tiles import ForestTile
-        self.targets = (ForestTile, )
+        from tiles import ForestTile, Farm, RoadTile
+        self.targets = (ForestTile, Farm, RoadTile)
         self.name = "Axe"
         self.description = "Cuts down forests."
+
+class EnergyDrinkItem(DestructionItem):
+    def __init__(self, x, y):
+        super().__init__(assets.energydrink_item, x, y)
+        self.cost = 10
+        from tiles import Nolat
+        self.targets = (Nolat, )
+        self.name = "Energy Drink"
+        self.description = "Give to a Nolat to make them go away."
 
 
 

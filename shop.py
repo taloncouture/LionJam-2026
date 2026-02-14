@@ -38,6 +38,7 @@ class ShopState(State):
         self.slots[0][5] = items.FactoryItem(self.x + (16 * 5 * SCALE_FACTOR), self.y)
         self.slots[0][6] = items.TowerItem(self.x + (ITEM_WIDTH * 6), self.y)
         self.slots[0][7] = items.MonumentItem(self.x + (ITEM_WIDTH * 7), self.y)
+        self.slots[1][0] = items.EnergyDrinkItem(self.x, self.y + ITEM_WIDTH)
 
     def update(self):
         
@@ -55,6 +56,8 @@ class ShopState(State):
         if(self.x <= mx < self.x + self.width and self.y <= my < self.y + self.height):
             x = int((mx - self.x) / (16 * SCALE_FACTOR))
             y = int((my - self.y) / (16 * SCALE_FACTOR))
+
+            pygame.mixer.Sound.play(assets.click)
 
             if(self.slots[y][x] != ' '):
                 self.gameContext.selected_item = self.slots[y][x]
