@@ -17,14 +17,12 @@ open_can = mixer.Sound(resource_path('assets/can_open.wav'))
 click = mixer.Sound(resource_path('assets/click.wav'))
 collect = mixer.Sound(resource_path('assets/collect.mp3'))
 construct = mixer.Sound(resource_path('assets/construct.mp3'))
-pizza_sound = mixer.Sound(resource_path('assets/pizza_sound.wav'))
+pizza_sound = mixer.Sound(resource_path('assets/PIZZA.wav'))
 pizza_sound_2 = mixer.Sound(resource_path('assets/pizza_sound_2.wav'))
 pizza_sound_3 = mixer.Sound(resource_path('assets/pizza_sound_3.wav'))
 lose = mixer.Sound(resource_path('assets/lose.mp3'))
+laugh = mixer.Sound(resource_path('assets/laugh.mp3'))
 
-gamemusic = mixer.music.load(resource_path('assets/gamemusic.mp3'))
-mixer.music.set_volume(0.1)
-mixer.music.play(-1)
 
 grass = pygame.image.load(resource_path('assets/grass_sand.png'))
 grass = pygame.transform.scale(grass, (TILE_SIZE, TILE_SIZE))
@@ -62,6 +60,9 @@ monument = pygame.transform.scale(monument, (TILE_SIZE, TILE_SIZE))
 cheese = pygame.image.load(resource_path('assets/gem.png'))
 cheese = pygame.transform.scale(cheese, (TILE_SIZE, TILE_SIZE))
 
+heart = pygame.image.load(resource_path('assets/heart.png'))
+heart = pygame.transform.scale(heart, (TILE_SIZE, TILE_SIZE))
+
 pizza = pygame.image.load(resource_path('assets/pizza.png'))
 pizza = pygame.transform.scale(pizza, (TILE_SIZE, TILE_SIZE))
 
@@ -80,10 +81,13 @@ stage_2 = pygame.transform.scale(stage_2, (TILE_SIZE * 3, TILE_SIZE * 3))
 stage_1 = pygame.image.load(resource_path('assets/stage_1.png'))
 stage_1 = pygame.transform.scale(stage_1, (TILE_SIZE * 3, TILE_SIZE * 3))
 
-mrpizza = pygame.image.load(resource_path('assets/mrpizza.png'))
+stage_0 = pygame.image.load(resource_path('assets/stage_0.png'))
+stage_0 = pygame.transform.scale(stage_0, (TILE_SIZE * 3, TILE_SIZE * 3))
+
+mrpizza = pygame.image.load(resource_path('assets/mrpizza2.png'))
 mrpizza = pygame.transform.scale(mrpizza, (TILE_SIZE, TILE_SIZE))
 
-mrpizza_2 = pygame.image.load(resource_path('assets/mrpizza_2.png'))
+mrpizza_2 = pygame.image.load(resource_path('assets/mrpizza2_2.png'))
 mrpizza_2 = pygame.transform.scale(mrpizza_2, (TILE_SIZE, TILE_SIZE))
 
 nolat_1 = pygame.image.load(resource_path('assets/nolat_1.png'))
@@ -175,4 +179,16 @@ explode_2 = pygame.transform.scale(explode_2, (TILE_SIZE, TILE_SIZE))
 
 explode_3 = pygame.image.load(resource_path('assets/explode_3.png'))
 explode_3 = pygame.transform.scale(explode_3, (TILE_SIZE, TILE_SIZE))
+
+instructions_background = pygame.image.load(resource_path('assets/instructions_background.png'))
+instructions_background = pygame.transform.scale(instructions_background, (TILE_SIZE * 2 * 5, TILE_SIZE * 5))
+
+details_background = pygame.image.load(resource_path('assets/instructions_background.png'))
+details_background = pygame.transform.scale(instructions_background, (TILE_SIZE * 2 * 2, TILE_SIZE * 2))
+
+pyramid_icon = pygame.image.load(resource_path('assets/pyramid_icon.png'))
+pyramid_icon = pygame.transform.scale(pyramid_icon, (ITEM_WIDTH * 5, ITEM_HEIGHT * 5))
+
+talon = pygame.image.load(resource_path('assets/talon.PNG'))
+talon = pygame.transform.scale(talon, (500, 500))
 

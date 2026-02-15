@@ -11,7 +11,7 @@ def coords_to_iso(x, y):
 class GameContext:
     def __init__(self):
         self.selected_item = None
-        self.credits = 10
+        self.credits = 100
         self.bricks = 0
         self.required_bricks = [0, 10, 25, 45, 70, 95]
         #self.required_bricks = [0, 1, 2, 3, 4, 5]

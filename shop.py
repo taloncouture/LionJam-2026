@@ -78,14 +78,14 @@ class ShopState(State):
 
     def render(self, screen, surface):
 
-        screen.fill((0, 0, 0))
-        surface.fill((255, 243, 193))
+        # screen.fill((0, 0, 0))
+        # surface.fill((255, 243, 193))
 
         # screen.fill((185, 157, 51))
         # surface.fill((185, 157, 51))
 
-        surface.blit(assets.cheese, ((WIDTH / 2) - (TILE_SIZE / 2), (PADDING * 6)))
-        graphics.renderText(surface, (WIDTH / 2) + PADDING * 3, (PADDING * 5.5) + (TILE_SIZE / 2), 24, f'x{self.gameContext.credits}', 0, 1, (178, 0, 0))
+        # surface.blit(assets.cheese, ((WIDTH / 2) - (TILE_SIZE / 2), (PADDING * 6)))
+        # graphics.renderText(surface, (WIDTH / 2) + PADDING * 3, (PADDING * 5.5) + (TILE_SIZE / 2), 24, f'x{self.gameContext.credits}', 0, 1, (178, 0, 0))
 
 
         surface.blit(assets.inventory, (self.x, self.y))
@@ -105,9 +105,13 @@ class ShopState(State):
         surface.blit(assets.shop_border, (self.x - (16 * SCALE_FACTOR), self.y - (16 * SCALE_FACTOR)))
 
         if(self.selected_x != None and self.selected_y != None and self.slots[self.selected_y][self.selected_x] != ' '):
+
+            surface.blit(assets.instructions_background, (WIDTH / 2 - assets.instructions_background.get_width() / 2, HEIGHT - HEIGHT / 4))
+
             item = self.slots[self.selected_y][self.selected_x]
-            graphics.renderText(surface, WIDTH / 2, HEIGHT - (HEIGHT / 4), 40, f"{item.name}", 1, 0, (178, 0, 0))
-            graphics.renderText(surface, WIDTH / 2, HEIGHT - (HEIGHT / 6), 30, f"Cost: {item.cost}", 1, 0, (178, 0, 0))
-            graphics.renderText(surface, WIDTH / 2, HEIGHT - (HEIGHT / 8), 30, f"Description: {item.description}", 1, 0, (178, 0, 0))
+            graphics.renderText(surface, WIDTH / 2, HEIGHT - (PADDING * 15), 35, f"{item.name}", 1, 0, (178, 0, 0))
+            graphics.renderText(surface, WIDTH / 2, HEIGHT - (PADDING * 9), 25, f"Cost: {item.cost}", 1, 0, (178, 0, 0))
+            graphics.renderText(surface, WIDTH / 2, HEIGHT - (PADDING * 6), 25, f"Produces {item.credits_produced} credits", 1, 0, (178, 0, 0))
+            graphics.renderText(surface, WIDTH / 2, HEIGHT - (PADDING * 3), 24, f"{item.description}", 1, 0, (178, 0, 0))
 
         screen.blit(pygame.transform.smoothscale(surface, (self.engine.scaled_w, self.engine.scaled_h)), (self.engine.offset_x, self.engine.offset_y))

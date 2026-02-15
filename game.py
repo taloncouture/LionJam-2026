@@ -26,12 +26,6 @@ class GameState(states.State):
 
         self.next_turn_button = items.Button(assets.next_turn, WIDTH - (16 * SCALE_FACTOR) - PADDING, HEIGHT - (16 * SCALE_FACTOR) - PADDING, self.engine)
 
-        self.fade_surface = pygame.Surface((WIDTH, HEIGHT))
-        self.fade_surface.fill((0, 0, 0))
-        self.fade_surface.set_alpha(0)
-        self.fade_alpha = 255
-        self.fade_speed = 10
-
         self.game_finished = False
 
     
@@ -63,6 +57,8 @@ class GameState(states.State):
     
     # function of insanity
     def update_connections(self, tile, claim=True):
+
+        tile.connected_tiles = {}
 
         if not tile.required_connections:
             return
@@ -209,6 +205,8 @@ class GameState(states.State):
 
             if(isinstance(self.gameContext.selected_item, items.DestructionItem)):
                 if(tiles.is_valid(selected_x, selected_y, tiles.tile_map) and isinstance(tiles.tile_map[selected_y][selected_x], self.gameContext.selected_item.targets)):
+                    if(isinstance(tiles.tile_map[selected_y][selected_x], tiles.Nolat) == True):
+                        pygame.mixer.Sound.play(assets.open_can)
                     tiles.tile_map[selected_y][selected_x].destroy()
                     self.gameContext.selected_item = None
                     self.gameContext.credits -= cost
@@ -229,12 +227,6 @@ class GameState(states.State):
 
     def update(self):
 
-        if self.fade_alpha > 0:
-            self.fade_alpha -= self.fade_speed
-            if self.fade_alpha < 0:
-                self.fade_alpha = 0
-        self.fade_surface.set_alpha(self.fade_alpha)
-
         inactive = set()
         for anim in animation.animations:
             anim.update()
@@ -246,6 +238,8 @@ class GameState(states.State):
 
         for y in range(len(tiles.tile_map)):
             for x in range(len(tiles.tile_map[y])):
+
+                #self.update_connections(tiles.tile_map[y][x], False)
                 
                 
                 if(isinstance(tiles.tile_map[y][x], tiles.Pyramid)):
@@ -260,7 +254,8 @@ class GameState(states.State):
                         if(self.gameContext.bricks >= self.gameContext.required_bricks[next_stage]):
                             self.gameContext.pyramid_stage = next_stage
                             pyramid.stage = next_stage
-                            self.built = True
+                            pygame.mixer.Sound.play(assets.pizza_sound)
+                            #self.built = True
                             #self.gameContext.built = True
 
         
@@ -314,9 +309,17 @@ class GameState(states.State):
 
         surface.blit(assets.cheese, (PADDING, 0))
         graphics.renderText(surface, PADDING * 8.2, (PADDING * 4), 24, f'x{self.gameContext.credits}', 0, 1, (178, 0, 0))
+
+        if(self.gameContext.lives > 0):
+            surface.blit(assets.heart, (WIDTH - TILE_SIZE - PADDING, 0))
+            if(self.gameContext.lives > 1):
+                surface.blit(assets.heart, (WIDTH - TILE_SIZE - PADDING * 7, 0))
+                if(self.gameContext.lives > 2):
+                    surface.blit(assets.heart, (WIDTH - TILE_SIZE - PADDING * 13, 0))
+        #surface.blit(assets.heart, (WIDTH - TILE_SIZE - P 0))
         
         
-        graphics.renderText(surface, PADDING, HEIGHT - PADDING * 5, 24, f"Turn: {self.gameContext.turn}", 0, 0, (178, 0, 0))
+        graphics.renderText(surface, PADDING, HEIGHT - PADDING * 5, 30, f"Turn: {self.gameContext.turn}", 0, 0, (178, 0, 0))
         
         self.next_turn_button.update()
         self.next_turn_button.render()
@@ -329,10 +332,13 @@ class GameState(states.State):
 
             tile = tiles.tile_map[imy][imx]
 
-            if(not isinstance(tile, tiles.AirTile) and not isinstance(tile, tiles.ForestTile) and not isinstance(tile, tiles.Restricted)):
-                graphics.renderText(surface, tx + (TILE_SIZE / 2), ty + (TILE_SIZE / 2), 25, f"Producing Credits: {tile.credits_produced}", 1, 0, (178, 0, 0))
+            if(not isinstance(tile, (tiles.AirTile, tiles.ForestTile, tiles.Restricted, tiles.MRPizza, tiles.Nolat, tiles.RoadTile))):
+                surface.blit(assets.details_background, (tx + (TILE_SIZE / 2) - assets.details_background.get_width() / 2, ty + (TILE_SIZE / 2)))
+                
+                graphics.renderText(surface, tx + (TILE_SIZE / 2), ty + (TILE_SIZE / 2) + PADDING * 2, 25, f"Producing {tile.credits_produced} credits", 1, 0, (178, 0, 0))
                 if(isinstance(tile, tiles.ProductionTile)):
-                    graphics.renderText(surface, tx + (TILE_SIZE / 2), ty + (TILE_SIZE / 2) + PADDING * 3, 25, f"Requirements Met: {tile.requirements_met}", 1, 0, (178, 0, 0))
+                    graphics.renderText(surface, tx + (TILE_SIZE / 2), ty + (TILE_SIZE / 2) + PADDING * 5, 25, f"Functioning: {tile.requirements_met}", 1, 0, (178, 0, 0))
+                    graphics.renderText(surface, tx + (TILE_SIZE / 2), ty + (TILE_SIZE / 2) + PADDING * 8, 25, f"Producing {tile.production_quantity} pizza", 1, 0, (178, 0, 0))
         #selector
 
 
@@ -340,6 +346,3 @@ class GameState(states.State):
 
 
         screen.blit(pygame.transform.smoothscale(surface, (scaled_w, scaled_h)), (x, y))
-
-        scaled_fade = pygame.transform.smoothscale(self.fade_surface, (self.engine.scaled_w, self.engine.scaled_h))
-        screen.blit(scaled_fade, (self.engine.offset_x, self.engine.offset_y))

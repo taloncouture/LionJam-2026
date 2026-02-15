@@ -8,6 +8,7 @@ import engine_core
 import shop
 import context
 import game
+from pygame import mixer
 
 pygame.init()
 
@@ -16,6 +17,8 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.RESIZABLE)
 game_surface = pygame.Surface((WIDTH, HEIGHT))
 
 pygame.display.set_caption("Great Pyramid of Pizza")
+
+mixer.init()
 
 # I have no idea why this actually works now lol DO NOT CHANGE
 
@@ -38,7 +41,9 @@ def main():
     shopState = shop.ShopState(engine, gameContext)
     endState = states.EndState(engine, gameContext)
     titleState = states.TitleState(engine, gameContext)
-    currentState = titleState
+    instructionState = states.InstructionState(engine, gameContext)
+    introState = states.IntroductionState(engine, gameContext)
+    currentState = gameState
 
     while True:
         for event in pygame.event.get():
@@ -50,26 +55,44 @@ def main():
                 currentState.on_click()
 
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_e:
+                if event.key == pygame.K_SPACE:
 
-                    if currentState == titleState:
+                    if(currentState == titleState):
+                        currentState = introState
+                        pygame.mixer.Sound.play(assets.click)
+
+                    if(currentState == instructionState):
+                        instructionState.on_press()
+                        
+                    if(currentState == instructionState and currentState.current_page >= currentState.pages):
                         currentState = gameState
 
                     elif currentState == shopState:
                         currentState.on_close()
                         currentState = gameState
+                        pygame.mixer.Sound.play(assets.click)
                     elif currentState == gameState:
                         currentState.on_close()
                         currentState = shopState
+                        pygame.mixer.Sound.play(assets.click)
 
     
         if((currentState == gameState and gameState.game_finished) or (currentState == gameState and gameContext.lives <= 0)):
             currentState = endState
 
+        if(currentState == introState and currentState.finished == True):
+            currentState = instructionState
+            gamemusic = mixer.music.load(assets.resource_path('assets/kitsune.mp3'))
+            mixer.music.set_volume(0.1)
+            mixer.music.play(-1)
+
 
         #main game loop
 
         engine.update()
+
+        if(currentState == instructionState or currentState == shopState):
+            gameState.render(screen, game_surface)
 
         #loop goes here
         currentState.update()

@@ -26,8 +26,9 @@ class FactoryItem(Item):
         from tiles import FactoryTile
         self.tile = FactoryTile
         self.cost = 10
+        self.credits_produced = 1
         self.name = "Factory"
-        self.description = "Makes 3 pizzas. Requires connection to 1 Housing and 2 Farms."
+        self.description = "Makes 3 pizzas. Needs connection to 1 House and 2 Farms."
 
 class FarmItem(Item):
 
@@ -40,7 +41,7 @@ class FarmItem(Item):
         self.cost = 2
         self.credits_produced = 1
         self.name = "Farm"
-        self.description = "Grows products to make pizza"
+        self.description = "Grows products to make pizza."
 
 class RoadItem(Item):
     def __init__(self, x, y):
@@ -49,7 +50,7 @@ class RoadItem(Item):
         self.tile = RoadTile
         self.cost = 1
         self.name = "Road"
-        self.description = "Connects tiles together"
+        self.description = "Connects tiles together."
 
 class MonumentItem(Item):
     def __init__(self, x, y):
@@ -57,6 +58,7 @@ class MonumentItem(Item):
         from tiles import MonumentTile
         self.tile = MonumentTile
         self.cost = 20
+        self.credits_produced = 5
         self.name = "Energy Drink Monument"
         self.description = "Red Bull is awesome."
 
@@ -67,7 +69,7 @@ class TowerItem(Item):
         self.tile = Tower
         self.cost = 10
         self.name = "Military Tower"
-        self.description = "Defends from Nolats within 3 blocks"
+        self.description = "Defends from Nolats adjacent to the tower."
 
 class PizzeriaItem(Item):
     def __init__(self, x, y):
@@ -75,6 +77,7 @@ class PizzeriaItem(Item):
         from tiles import PizzeriaTile
         self.tile = PizzeriaTile
         self.cost = 3
+        self.credits_produced = 1
         self.name = "Pizzeria"
         self.description = "Makes 1 pizza. Requires connection to 1 Farm."
 
@@ -84,6 +87,7 @@ class HousingItem(Item):
         from tiles import Housing
         self.tile = Housing
         self.cost = 5
+        self.credits_produced = 1
         self.name = "Housing"
         self.description = "Supplies workers to Factories."
 
@@ -99,7 +103,7 @@ class AxeItem(DestructionItem):
         from tiles import ForestTile, Farm, RoadTile
         self.targets = (ForestTile, Farm, RoadTile)
         self.name = "Axe"
-        self.description = "Cuts down forests."
+        self.description = "Cuts down forests and farms."
 
 class EnergyDrinkItem(DestructionItem):
     def __init__(self, x, y):

@@ -89,7 +89,7 @@ def place_tile(x, y, tile, tilemap):
                 neighbors = get_neighbors(x, y, ground_tile_map)
 
                 for neighbor in neighbors:
-                    print(neighbor)
+                    #print(neighbor)
                     if(neighbor == None or isinstance(neighbor, AirTile)):
                         tile_map[y][x] = tile(x, y)
                         return True
@@ -218,12 +218,13 @@ class ProductionTile(Tile):
     def produce(self):
         if(self.requirements_met):
             self.indicator_quantity += self.production_quantity
+            self.indicator.quantity = self.indicator_quantity
 
     def collect(self):
         if(self.indicator_quantity > 0):
             result = self.indicator_quantity
             pygame.mixer.Sound.play(assets.collect)
-            pygame.mixer.Sound.play(random.choice([assets.pizza_sound, assets.pizza_sound_2, assets.pizza_sound_3]))
+            #pygame.mixer.Sound.play(random.choice([assets.pizza_sound, assets.pizza_sound_2, assets.pizza_sound_3]))
             self.indicator_quantity = 0
             return result
         return 0
@@ -332,13 +333,12 @@ class Restricted(Tile):
 class Pyramid(Tile):
     def __init__(self, x, y):
         super().__init__(x, y)
-        self.stages = [None, assets.stage_1, assets.stage_2, assets.stage_3, assets.stage_4, assets.stage_5]
+        self.stages = [assets.stage_0, assets.stage_1, assets.stage_2, assets.stage_3, assets.stage_4, assets.stage_5]
         self.stage = 0
 
     def render(self, surface):
-        if(self.stage != 0):
-            ix, iy = coords_to_iso(self.x, self.y)
-            surface.blit(self.stages[self.stage], (ix - (config.HALF_W * (2)) - config.SCALE_FACTOR * 2, iy - (config.HALF_H * (5)) - config.HALF_W + config.SCALE_FACTOR))
+        ix, iy = coords_to_iso(self.x, self.y)
+        surface.blit(self.stages[self.stage], (ix - (config.HALF_W * (2)) - config.SCALE_FACTOR * 2, iy - (config.HALF_H * (5)) - config.HALF_W + config.SCALE_FACTOR))
 
 class MRPizza(Tile):
     def __init__(self, x, y):
@@ -394,9 +394,10 @@ class Tower(MilitaryTile):
             for neighbor in neighbors:
                 if(isinstance(neighbor, EnemyTile)):
                     neighbor.destroy()
+                    pygame.mixer.Sound.play(assets.open_can)
 
     def lookout(self):
-        print(f"Tower: {(self.x, self.y)} looking out")
+        #print(f"Tower: {(self.x, self.y)} looking out")
         self.indicator_quantity = 0
 
         neighbors = get_neighbors(self.x, self.y, tile_map)
@@ -468,7 +469,8 @@ class Nolat(EnemyTile):
 
         ix, iy = coords_to_iso(self.x, self.y)
         pop_anim = animation.Animation(ix, iy, [assets.explode_1, assets.explode_2, assets.explode_3], 0.3)
-        pygame.mixer.Sound.play(assets.open_can)
+        # if(isinstance(tiles_ground[self.y][self.x], PlatformTile) != True):
+        #     pygame.mixer.Sound.play(assets.open_can)
 
     def pathfind(self):
         neighbors = get_neighbors(self.x, self.y, tile_map)
@@ -532,7 +534,7 @@ class Nolat(EnemyTile):
 
         neighbors = get_neighbors(self.x, self.y, tile_map)
 
-        print("Buildings: ", neighbors)
+        #print("Buildings: ", neighbors)
 
         valid_neighbors = []
         
