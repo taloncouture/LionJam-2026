@@ -264,7 +264,7 @@ class FactoryTile(ProductionTile):
         self.image = assets.factory_1
         self.credits_produced = 1
         self.required_farms = 3
-        self.required_connections = {Farm : 2, Housing : 1, Restricted : 1}
+        self.required_connections = {Farm : 3, Housing : 1, Restricted : 1}
         self.production_quantity = 3
         
         self.frames = [assets.factory_1, assets.factory_2, assets.factory_3]
@@ -456,8 +456,6 @@ class Nolat(EnemyTile):
         self.occupied_tile = None
 
     def on_click(self):
-        # print("clicked")
-        # self.destroy()
         pass
 
 
@@ -469,8 +467,7 @@ class Nolat(EnemyTile):
 
         ix, iy = coords_to_iso(self.x, self.y)
         pop_anim = animation.Animation(ix, iy, [assets.explode_1, assets.explode_2, assets.explode_3], 0.3)
-        # if(isinstance(tiles_ground[self.y][self.x], PlatformTile) != True):
-        #     pygame.mixer.Sound.play(assets.open_can)
+
 
     def pathfind(self):
         neighbors = get_neighbors(self.x, self.y, tile_map)
@@ -492,15 +489,6 @@ class Nolat(EnemyTile):
                         if(random.random() < 0.5):
                             best_neighbor = neighbor
 
-            # if(isinstance(best_neighbor, RoadTile)):
-            #     self.occupied_tile = RoadTile
-            # else:
-            #     self.occupied_tile = AirTile
-            # tile_map[self.y][self.x] = self.occupied_tile(self.x, self.y)
-            # self.x = best_neighbor.x
-            # self.y = best_neighbor.y
-            # tile_map[best_neighbor.y][best_neighbor.x] = self
-
             if(isinstance(self.occupied_tile, RoadTile)):
                 tile_map[self.y][self.x] = self.occupied_tile
             else:
@@ -511,21 +499,6 @@ class Nolat(EnemyTile):
             else:
                 self.occupied_tile = None
 
-            # if self.occupied_tile is not None:
-            #     tile_map[self.y][self.x] = self.occupied_tile
-
-            # # Save the new tile you are stepping on
-            # if(isinstance(tile_map[best_neighbor.y][best_neighbor.x], RoadTile)):
-            #     tile_map[self.y][self.x] = self.occupied_tile
-            # else:
-            #     tile_map[self.y][self.x] = AirTile(self.x, self.y)
-
-            # if isinstance(tile_map[best_neighbor.y][best_neighbor.x], RoadTile):
-            #     self.occupied_tile = tile_map[best_neighbor.y][best_neighbor.x]
-            # else:
-            #     self.occupied_tile = None  # nothing to restore, gets replaced with AirTile
-
-            # Put yourself on the tile_map
             self.x = best_neighbor.x
             self.y = best_neighbor.y
             tile_map[self.y][self.x] = self

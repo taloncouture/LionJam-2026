@@ -1,0 +1,19 @@
+name: Build Mac Executable
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-mac:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: |
+          pip install pyinstaller
+          pyinstaller main.py --onefile --windowed --add-data "assets:assets"

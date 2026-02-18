@@ -237,7 +237,7 @@ class IntroductionState(State):
 
     def update(self):
         if(self.text_y > -1000):
-            self.text_y -= 1.5
+            self.text_y -= 2
 
         if(self.text_y < -400 and self.text_y > -500):
             self.alpha -= 3

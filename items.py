@@ -108,7 +108,7 @@ class AxeItem(DestructionItem):
 class EnergyDrinkItem(DestructionItem):
     def __init__(self, x, y):
         super().__init__(assets.energydrink_item, x, y)
-        self.cost = 10
+        self.cost = 5
         from tiles import Nolat
         self.targets = (Nolat, )
         self.name = "Energy Drink"

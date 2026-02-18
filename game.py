@@ -58,8 +58,6 @@ class GameState(states.State):
     # function of insanity
     def update_connections(self, tile, claim=True):
 
-        tile.connected_tiles = {}
-
         if not tile.required_connections:
             return
         
@@ -90,7 +88,7 @@ class GameState(states.State):
 
                 if(isinstance(t, required_class)):
 
-                    if getattr(t, 'claimed', None) in (None, tile):
+                    if t.claimed is tile or t.claimed is None:
                         tile.connected_tiles[required_class].add(t)
 
 
@@ -114,13 +112,11 @@ class GameState(states.State):
                         t.claimed = tile
                         to_claim_count -= 1
 
-        if requirements_met:
-            #print(f"{type(tile).__name__} at {(tile.x, tile.y)} requirements met!")
-            if(not tile.requirements_met):
-                tile.requirements_met = True
 
 
     def place_item(self, x, y):
+
+
         if(0 <= y < len(tiles.tile_map) and 0 <= x < len(tiles.tile_map[y])):
 
             if(tiles.place_tile(x, y, self.gameContext.selected_item.tile, tiles.tile_map)):
