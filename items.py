@@ -99,11 +99,11 @@ class DestructionItem(Item):
 class AxeItem(DestructionItem):
     def __init__(self, x, y):
         super().__init__(assets.axe_item, x, y)
-        self.cost = 1
-        from tiles import ForestTile, Farm, RoadTile
-        self.targets = (ForestTile, Farm, RoadTile)
+        self.cost = 2
+        from tiles import ForestTile, Farm, RoadTile, PizzeriaTile, FactoryTile, MonumentTile, Tower
+        self.targets = (ForestTile, Farm, RoadTile, PizzeriaTile, FactoryTile, MonumentTile, Tower)
         self.name = "Axe"
-        self.description = "Cuts down forests and farms."
+        self.description = "Removes tiles you built."
 
 class EnergyDrinkItem(DestructionItem):
     def __init__(self, x, y):

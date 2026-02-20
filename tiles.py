@@ -264,7 +264,7 @@ class FactoryTile(ProductionTile):
         self.image = assets.factory_1
         self.credits_produced = 1
         self.required_farms = 3
-        self.required_connections = {Farm : 3, Housing : 1, Restricted : 1}
+        self.required_connections = {Farm : 2, Housing : 1, Restricted : 1}
         self.production_quantity = 3
         
         self.frames = [assets.factory_1, assets.factory_2, assets.factory_3]

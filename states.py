@@ -124,7 +124,7 @@ class InstructionState(State):
 
         if(self.current_page == 1):
 
-            graphics.renderText(surface, WIDTH / 2, HEIGHT - 50 - 50, self.text_size, "Tiles must be placed adjacent to each other", 1, 0, (178, 0, 0))
+            graphics.renderText(surface, WIDTH / 2, HEIGHT - 50 - 50, self.text_size, "Tiles must be placed adjacent to an existing one", 1, 0, (178, 0, 0))
             graphics.renderText(surface, WIDTH / 2, HEIGHT - 50, self.text_size, "and starting from the Pyramid construction site.", 1, 0, (178, 0, 0))
 
         if(self.current_page == 2):
@@ -144,25 +144,32 @@ class InstructionState(State):
 
         if(self.current_page == 4):
 
+            surface.blit(assets.factory_1, ((WIDTH / 2) - (TILE_SIZE / 2), HEIGHT - 50 - 50 - 50 - TILE_SIZE))
+
+            graphics.renderText(surface, WIDTH / 2, HEIGHT - 50 - 50, self.text_size, "Factories will need to be placed next to", 1, 0, (178, 0, 0))
+            graphics.renderText(surface, WIDTH / 2, HEIGHT - 50, self.text_size, "the cheese oceans.", 1, 0, (178, 0, 0))
+
+        if(self.current_page == 5):
+
             surface.blit(assets.next_turn, ((WIDTH / 2) - (ITEM_WIDTH / 2), HEIGHT - 50 - 50 - 50 - ITEM_HEIGHT))
 
             graphics.renderText(surface, WIDTH / 2, HEIGHT - 50 - 50, self.text_size, "When you are done placing tiles, click the", 1, 0, (178, 0, 0))
             graphics.renderText(surface, WIDTH / 2, HEIGHT - 50, self.text_size, "next turn button", 1, 0, (178, 0, 0))
 
-        if(self.current_page == 5):
+        if(self.current_page == 6):
 
             surface.blit(assets.cheese, ((WIDTH / 2) - (TILE_SIZE / 2), HEIGHT - 50 - 50 - 50 - TILE_SIZE))
 
             graphics.renderText(surface, WIDTH / 2, HEIGHT - 50 - 50, self.text_size, "At the beginning of each turn, credits will be given", 1, 0, (178, 0, 0))
             graphics.renderText(surface, WIDTH / 2, HEIGHT - 50, self.text_size, "based on the number and type of buildings and...", 1, 0, (178, 0, 0))
 
-        if(self.current_page == 6):
+        if(self.current_page == 7):
 
             surface.blit(assets.pizza, ((WIDTH / 2) - (TILE_SIZE / 2), HEIGHT - 50 - 50 - 50 - TILE_SIZE))
 
             graphics.renderText(surface, WIDTH / 2, HEIGHT - 50, self.text_size, "...pizza can be collected to build the pyramid.", 1, 0, (178, 0, 0))
 
-        if(self.current_page == 7):
+        if(self.current_page == 8):
 
             surface.blit(assets.nolat_platform, ((WIDTH / 2) - TILE_SIZE - (PADDING * 3), HEIGHT - 50 - 50 - 25 - TILE_SIZE))
             surface.blit(assets.nolat_2, ((WIDTH / 2) + (PADDING * 3), HEIGHT - 50 - 50 - 50 - TILE_SIZE))
@@ -170,14 +177,14 @@ class InstructionState(State):
             graphics.renderText(surface, WIDTH / 2, HEIGHT - 50 - 50, self.text_size, "Nolats may spawn on one of the purple platforms,", 1, 0, (178, 0, 0))
             graphics.renderText(surface, WIDTH / 2, HEIGHT - 50, self.text_size, "and will go toward the Pyramid.", 1, 0, (178, 0, 0))
 
-        if(self.current_page == 8):
+        if(self.current_page == 9):
 
             surface.blit(assets.redbull, ((WIDTH / 2) - (TILE_SIZE / 2), HEIGHT - 50 - 50 - 50 - TILE_SIZE))
 
             graphics.renderText(surface, WIDTH / 2, HEIGHT - 50 - 50, self.text_size, "You should try to stop them if you can,", 1, 0, (178, 0, 0))
             graphics.renderText(surface, WIDTH / 2, HEIGHT - 50, self.text_size, "and you can do so by giving them an energy drink.", 1, 0, (178, 0, 0))
 
-        if(self.current_page == 9):
+        if(self.current_page == 10):
 
             surface.blit(assets.heart, ((WIDTH / 2) - (TILE_SIZE / 2), HEIGHT - 50 - 50 - 50 - TILE_SIZE))
 
