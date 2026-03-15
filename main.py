@@ -43,7 +43,7 @@ def main():
     titleState = states.TitleState(engine, gameContext)
     instructionState = states.InstructionState(engine, gameContext)
     introState = states.IntroductionState(engine, gameContext)
-    currentState = titleState
+    currentState = instructionState
 
     while True:
         for event in pygame.event.get():
