@@ -7,8 +7,8 @@ This is all made in Python using the Pygame library.
 
 # How to play
 The quickest way would be to go over to my page on Itch.io, but otherwise you can do:
-'''
+```
 pip install pygame
 pip install pyinstaller
 pyinstaller --onefile main.py --add-data "assets:assets"
-'''
+```
